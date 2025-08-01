@@ -13,51 +13,58 @@ export default function Home() {
       <div className="h-screen flex justify-center items-center bg-[url(/backgroundimages/Abstract-White-2.png)] bg-cover bg-center bg-no-repeat bg-fixed">
 
         <div className="">
-          <Image
-            src="/tnmmlogotransparent.PNG"
-            width={40}
-            height={40}
-            alt="True North Logo Transparent"
-            className="m-auto mb-2"
-          />
-          <h1 className=" text-5xl font-bold text-black mb-5">TrueNorth Progress & Accountability Tracker</h1>
+          <div className="px-6 pt-12 pb-6 rounded-t-2xl bg-cyan-50 shadow-sm">
+            <Image
+              src="/tnmmlogotransparent.PNG"
+              width={40}
+              height={40}
+              alt="True North Logo Transparent"
+              className=" mb-2"
+            />
+            <div className=" text-sm text-zinc-700">TrueNorth Media Monitoring Ltd</div>
+            <h1 className=" text-5xl font-bold text-black max-w-md ">Team Progress Tracker</h1>
+          </div>
 
-          <div className="flex justify-center items-center gap-2">
-            {!session && (<>
-              <Link href="/signin">
-                <button
-                  type="button"
-                  className="btn-sm bg-zinc-900 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm mb-2 flex items-center gap-2 hover:cursor">
-                  <LogIn size={15} className=" text-zinc-50" /> &nbsp; Sign in
-                </button>
-              </Link>
-            </>)}
-
-            {session && (
-              <>
-                <Link href="/dashboard">
+          <div className="px-6 py-6 rounded-b-2xl bg-zinc-50 shadow-sm">
+            <div className="flex justify-start items-center gap-2">
+              {!session && (<>
+                <Link href="/signin">
                   <button
                     type="button"
-                    className="btn-sm bg-cyan-900 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm mb-2 flex items-center gap-2">
-                    <Layout size={15} className=" text-zinc-50" /> &nbsp; Dashboard
+                    className="btn-sm bg-zinc-900 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm flex items-center gap-2 hover:-rotate-3 transition-all">
+                    <LogIn size={15} className=" text-zinc-50" /> &nbsp; Sign in
                   </button>
                 </Link>
-              </>
-            )}
+              </>)}
+
+              {session && (
+                <>
+                  <Link href="/dashboard">
+                    <button
+                      type="button"
+                      className="btn-sm bg-zinc-700 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm mb-2 flex items-center gap-2 hover:-rotate-3 transition-all">
+                      <Layout size={15} className=" text-zinc-50" /> &nbsp; Dashboard
+                    </button>
+                  </Link>
+                </>
+              )}
 
 
-            {session && (
-              <>
-                <button
-                  onClick={() => signOut()}
-                  type="button"
-                  className="btn-sm bg-red-700 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm mb-2 flex items-center gap-2">
-                  <LogOut size={15} className=" text-zinc-50" /> &nbsp; Signout
-                </button>
-              </>
-            )}
+              {session && (
+                <>
+                  <button
+                    onClick={() => signOut()}
+                    type="button"
+                    className="btn-sm bg-red-700 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm mb-2 flex items-center gap-2 hover:-rotate-3 transition-all">
+                    <LogOut size={15} className=" text-zinc-50" /> &nbsp; Signout
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
+
+
       </div>
     </>
   );

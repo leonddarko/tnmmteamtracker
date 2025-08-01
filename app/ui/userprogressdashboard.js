@@ -52,9 +52,8 @@ export default function UserProgressDashboard() {
                             ))}
 
                             {getUserCaptures(user._id).length === 0 && (
-                                <div className="text-sm mb-1 text-cyan-700">
-                                    <span className=" font-semibold ">N/A: </span>
-                                    No stations assigned to this user.
+                                <div className="text-sm mb-1 text-red-900">
+                                    No information available yet.
                                 </div>
                             )}
                         </div>
