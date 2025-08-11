@@ -10,7 +10,7 @@ export default function AddUserModal({ Stations }) {
         <button
             onClick={() => document.getElementById('adduser_modal').showModal()}
             type="button"
-            className="btn-xs flex justify-start items-center gap-1 bg-cyan-700 text-white rounded-full font-sans font-semibold text-xs px-1.5 py-1">
+            className="btn-xs flex justify-start items-center gap-1 bg-cyan-950 text-white rounded-full font-sans font-semibold text-xs px-2 py-1.5">
             <Plus size={13} className="" />
             <span>Add User</span>
         </button>

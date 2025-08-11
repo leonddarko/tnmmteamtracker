@@ -12,7 +12,7 @@ export async function GET(req) {
         if (!user) {
             return new Response(JSON.stringify({ message: 'User not found' }), { status: 404 });
         }
-        console.log(user.assignedStations);
+        // console.log(user.assignedStations);
         
         return new Response(JSON.stringify(user.assignedStations), { status: 200 });
 

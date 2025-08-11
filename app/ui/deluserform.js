@@ -65,18 +65,18 @@ export default function DelUserForm({ id }) {
                         name="id"
                         value={id}
                         type="submit"
-                        className="btn-xs flex justify-start items-center gap-1 hover:bg-red-300 text-red-700 rounded-full font-sans font-semibold text-xs px-2 transition-all">
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-white rounded-full font-sans font-semibold text-xs px-2 py-0.5 transition-all">
                         <Trash size={13} className="" />
-                        <span>Del</span>
+                        <span>Delete</span>
                     </button>
                 )}
 
                 {deleting === true && (
                     <button
                         type="button"
-                        className="btn-xs flex justify-start items-center gap-1 bg-red-50 text-red-700 rounded-full font-sans font-semibold text-xs px-2 opacity-80 btn-disabled">
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-red-50 rounded-full font-sans font-semibold text-xs px-2 py-0.5 opacity-80 btn-disabled">
                         <span className="loading loading-spinner loading-xs text-red-green"></span>
-                        <span>Del...</span>
+                        <span>Deleting...</span>
                     </button>
                 )}
 

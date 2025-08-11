@@ -2,12 +2,32 @@
 
 import { CloudUpload, Plus, Text, TimerIcon, User2, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { languages, products } from "../lib/data";
+import { countries } from "../lib/data";
 
-export default function DataEntryForm({ User }) {
+export default function DataEntryForm({ User, Industries, Companies }) {
     const [saving, setsaving] = useState(false)
     const [internalerror, setinternalerror] = useState(false);
 
+    const [industryID, setindustryID] = useState("")
+    const [industryCategories, setIndustryCategories] = useState([]);
+
+    console.log(industryID);
+
+
     const [currentTime, setCurrentTime] = useState("");
+    useEffect(() => {
+        if (!industryID) return;
+
+        const fetchCategories = async () => {
+            const res = await fetch(`/api/categories?industry=${industryID}`);
+            const data = await res.json();
+            setIndustryCategories(data.categories || []);
+        };
+
+        fetchCategories();
+    }, [industryID]);
+
 
     useEffect(() => {
         const updateTime = () => {
@@ -52,16 +72,16 @@ export default function DataEntryForm({ User }) {
                             name="date"
                             type="date"
                             min="2018-01-01"
-                            className="py-1 px-2 text-sm font-semibold rounded-md focus:outline-none shadow-sm bg-zinc-700 text-white"
+                            className="py-1 px-2 text-sm font-semibold rounded-md focus:outline-none shadow-sm bg-cyan-950 text-white"
                             required
                         />
                     </div>
 
                     {/* Timestamp Selection */}
                     <input
-                        type="time"
                         name="timestamp"
-                        className="py-0.5 px-1 rounded-md focus:outline-none shadow-sm bg-cyan-700 text-black"
+                        type="time"
+                        className="py-0.5 px-1 rounded-md focus:outline-none shadow-sm bg-cyan-950 text-white"
                         step={1}
                     />
 
@@ -82,15 +102,16 @@ export default function DataEntryForm({ User }) {
                     <div>
                         <select name="product" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
                             <option className="text-xs" value="" disabled>Select Product</option>
-                            <option className="text-sm" value="Jingle">Jingle</option>
-                            <option className="text-sm" value="Squeeze Back">Squeeze Back</option>
+                            {products.map((item) => (
+                                <option key={item.id} className="text-sm" value={item.product}>{item.product}</option>
+                            ))}
                         </select>
                     </div>
 
                     {/* Duration Selection */}
                     <div className="">
                         <label className="input input-sm flex items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
-                            <TimerIcon size={15} className="text-cyan-900" />
+                            <TimerIcon size={20} className="text-cyan-950" />
                             <input name="duration" type="number" min={0} className="grow font-semibold text-black" placeholder="Duration" required />
                         </label>
                     </div>
@@ -99,8 +120,9 @@ export default function DataEntryForm({ User }) {
                     <div>
                         <select name="language" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
                             <option className="text-xs" value="" disabled>Select Language</option>
-                            <option className="text-sm" value="English">English</option>
-                            <option className="text-sm" value="Twi">Twi</option>
+                            {languages.map((item) => (
+                                <option key={item.id} className="text-sm" value={item.language}>{item.language}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -112,54 +134,102 @@ export default function DataEntryForm({ User }) {
                             <option className="text-sm" value="News 360">News 360</option>
                         </select>
                     </div>
+                </div>
+
+                <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
+                    {/* Industry */}
+                    <div>
+                        <select
+                            name="Industry"
+                            className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold"
+                            required
+                            defaultValue=""
+                            onChange={(e) => {
+                                setindustryID(e.target.value);
+                            }}
+                        >
+                            <option className="text-xs" value="" disabled>Select Industry </option>
+                            {Industries.map((item) => (
+                                <option key={item._id} className="text-sm" value={item._id}>{item.industry}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Category */}
+                    <div>
+                        <select name="category" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                            <option className="text-xs text-black" value="" disabled>
+                                {!industryID ? "Select Industry first" : "Select Category"}
+                            </option>
+                            {industryCategories.map((cat, idx) => (
+                                <option key={idx} value={cat}>
+                                    {cat}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+
+                    {/* Company */}
+                    <div>
+                        <select name="Company" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                            <option className="text-xs" value="" disabled>Select Company </option>
+                            {Companies.map((item) => (
+                                <option key={item._id} className="text-sm" value={item.company}>
+                                    {item.company} | {item.country === "Ghana" && "GH" || item.country === "Nigeria" && "NG" || item.country === "Côte d'Ivoire" && "CI"}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
                     {/* Brand Generic Selection*/}
                     <div>
-                        <select name="bgeneric" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                        <select name="brandgeneric" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
                             <option className="text-xs" value="" disabled>Brand Generic </option>
                             <option className="text-sm" value="Promasidor">Generic</option>
                             <option className="text-sm" value="Telefonika">Generic</option>
                         </select>
                     </div>
 
-                    {/* Brand Generic Selection*/}
+                    {/* Brand Variant Selection*/}
                     <div>
-                        <select name="bvariant" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                        <select name="brandvariant" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
                             <option className="text-xs" value="" disabled>Brand Variant </option>
                             <option className="text-sm" value="Promasidor">Variant</option>
                             <option className="text-sm" value="Telefonika">Variant</option>
                         </select>
                     </div>
-
                 </div>
 
                 <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
-                    {/* Company */}
-                    <div>
-                        <select name="Company" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                            <option className="text-xs" value="" disabled>Select Company </option>
-                            <option className="text-sm" value="Promasidor">Company</option>
-                            <option className="text-sm" value="Telefonika">Company</option>
+
+                    <div className="flex justify-start items-center gap-2">
+                        <i className="fas fa-globe-africa text-cyan-950"></i>
+                        <select 
+                        name="country" 
+                        className="select select-sm w-full rounded-full shadow-sm bg-zinc-100 text-black font-semibold" 
+                        required defaultValue=""
+
+                        >
+                            <option className="text-xs" value="" disabled>Select your Country</option>
+                            {countries.slice(1).map((item) => (
+                                <option key={item.id} className="text-sm" value={item.country}>{item.country}</option>
+                            ))}
                         </select>
                     </div>
 
-                    <div>
-                        <select name="Industry" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                            <option className="text-xs" value="" disabled>Select Industry </option>
-                            <option className="text-sm" value="Promasidor">Industry</option>
-                            <option className="text-sm" value="Telefonika">Industry</option>
-                        </select>
-                    </div>
-
+                    {/* Time Submitted */}
                     <input
-                        name="timecaptured"
+                        name="timesubmitted"
                         type="time"
-                        className="py-0.5 px-1 rounded-md focus:outline-none bg-zinc-50 text-zinc-700"
+                        className="py-0.5 px-1 rounded-md focus:outline-none text-sm bg-zinc-50 text-zinc-500"
                         step={1}
                         value={currentTime}
                         disabled
+                        required
                     />
 
+                    {/* User */}
                     <div className=" flex justify-start items-center gap-1">
                         <User2 size={15} className="text-cyan-950" />
                         <input
@@ -168,10 +238,11 @@ export default function DataEntryForm({ User }) {
                             className="input-md bg-zinc-50 text-cyan-950 rounded-md font-semibold"
                             value={User}
                             disabled
+                            required
                         />
                     </div>
-
                 </div>
+
 
                 {/* Buttons  */}
                 <div className="flex justify-between items-center gap-3">
@@ -179,7 +250,7 @@ export default function DataEntryForm({ User }) {
                     <div className="flex justify-end items-center gap-3">
                         <button
                             type="reset"
-                            className="btn-ghost flex justify-start items-center gap-2 bg-zinc-100 text-zinc-700 rounded-full font-sans font-semibold text-xs p-1">
+                            className="btn-ghost flex justify-start items-center gap-2 bg-zinc-100 text-cyan-700 rounded-full font-sans font-semibold text-xs p-1">
                             <X size={15} className="" />
                             <span>Clear</span>
                         </button>
@@ -187,7 +258,7 @@ export default function DataEntryForm({ User }) {
                         {saving === false && (
                             <button
                                 type="submit"
-                                className="flex justify-start items-center gap-2 btn-sm bg-zinc-700 rounded-full px-3 py-1 text-white font-sans font-bold text-xs">
+                                className="flex justify-start items-center gap-2 btn-sm bg-cyan-950 rounded-full px-3 py-1 text-white font-sans font-bold text-xs">
                                 <CloudUpload size={15} className="" />
                                 <span>Save</span>
                             </button>
@@ -196,7 +267,7 @@ export default function DataEntryForm({ User }) {
                         {saving === true && (
                             <button
                                 type="button"
-                                className="flex justify-start items-center gap-2 btn-sm bg-zinc-400 rounded-full px-3 py-1 text-white font-sans font-bold text-xs opacity-80 btn-disabled">
+                                className="flex justify-start items-center gap-2 btn-sm bg-cyan-900 rounded-full px-3 py-1 text-white font-sans font-bold text-xs opacity-80 btn-disabled">
                                 <span className="loading loading-spinner loading-xs text-red-green"></span>
                                 <span>Saving...</span>
                             </button>

@@ -20,6 +20,7 @@ export default async function RootLayout({ children }) {
         <SessionProvider session={session}>
           {children}
         </SessionProvider>
+        {/* <Script src="https://kit.fontawesome.com/dcd356c426.js" /> */}
       </body>
     </html>
   );

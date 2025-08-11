@@ -1,20 +1,17 @@
 "use client"
 
 import { Trash } from "lucide-react";
-import { useState } from "react"
-import ToastAlert from "./toast"
+import ToastAlert from "./toast";
+import { useState } from "react";
 
-export default function DelStationForm({ id }) {
+export default function DelCompanyForm({ id }) {
     const [deleting, setdeleting] = useState(false);
     const [deleted, setdeleted] = useState(false);
     const [internalerror, setinternalerror] = useState(false);
 
-    const handleUserDeletion = async (event) => {
+    const handleCompanyDeletion = async (event) => {
         event.preventDefault();
         setdeleting(true)
-
-        const id = event.target.id.value;
-        // console.log(id);
 
         const data = {
             id
@@ -24,7 +21,7 @@ export default function DelStationForm({ id }) {
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/deletestation";
+        const endpoint = "/api/deletecompany";
 
         // Form the request for sending data to the server.
         const options = {
@@ -50,7 +47,7 @@ export default function DelStationForm({ id }) {
             setdeleting(false)
             setTimeout(() => {
                 location.reload(true);
-            }, 1000);
+            }, 500);
         } else {
             setdeleting(false)
             setinternalerror(true)
@@ -58,25 +55,25 @@ export default function DelStationForm({ id }) {
 
     }
 
-    return(<>
-         <form onSubmit={handleUserDeletion} >
+    return (
+        <>
+            <form onSubmit={handleCompanyDeletion} >
                 {deleting === false && (
                     <button
-                        name="id"
-                        value={id}
+                        onClick={handleCompanyDeletion}
                         type="submit"
-                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-white rounded-full font-sans font-semibold text-xs px-2 py-0.5 transition-all">
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-white rounded-full font-sans font-semibold text-xs px-2 py-0.5">
                         <Trash size={13} className="" />
-                        <span>Delete</span>
+                        <span>Del</span>
                     </button>
                 )}
 
                 {deleting === true && (
                     <button
                         type="button"
-                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-red-50 rounded-full font-sans font-semibold text-xs px-2 py-0.5 opacity-80 btn-disabled">
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-100 text-red-700 rounded-full font-sans font-semibold text-xs px-2 py-0.5 opacity-80 btn-disabled">
                         <span className="loading loading-spinner loading-xs text-red-green"></span>
-                        <span>Deleting...</span>
+                        <span>Del...</span>
                     </button>
                 )}
 
@@ -84,7 +81,7 @@ export default function DelStationForm({ id }) {
             <ToastAlert
                 stateVar={deleted}
                 textColor=" text-red-500"
-                text="Station deleted"
+                text="Company deleted"
                 onClick={() => setdeleted(false)}
                 iconHint="success"
             />
@@ -96,6 +93,7 @@ export default function DelStationForm({ id }) {
                 onClick={() => setinternalerror(false)}
                 iconHint="internalerror"
             />
-    </>)
+        </>
+    )
 
 }

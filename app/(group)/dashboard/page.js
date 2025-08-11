@@ -6,10 +6,23 @@ import { getUserID } from "@/app/lib/getUsers";
 import { Suspense } from "react";
 import TableSkeleton from "@/app/ui/skeletons";
 import DataEntryModal from "@/app/ui/dataentrymodal";
+import getAllCategories from "@/app/lib/getCategories";
+import getAllIndustries from "@/app/lib/getIndustries";
+import getCompanies from "@/app/lib/getCompanies";
 
 export default async function Dashboard() {
     const session = await getServerSession()
     const userID = await getUserID(session.user.email);
+
+    const industries = await getAllIndustries();
+    const categories = await getAllCategories();
+    const companies = await getCompanies();
+
+    // Convert data to a plain object
+    const Industries = JSON.parse(JSON.stringify(industries));
+    const Categories = JSON.parse(JSON.stringify(categories));
+    const Companies = JSON.parse(JSON.stringify(companies));
+
 
     return (
         <div className="py-6 md:pt-24 px-4 md:px-10 h-screen rounded-lg bg-white/70 shadow-sm overflow-scroll">
@@ -25,7 +38,7 @@ export default async function Dashboard() {
                     <h1 className=" text-3xl text-cyan-950 font-notosans font-bold leading-none">{session.user.name}</h1>
                     <p className="label-text text-cyan-950">Detailed instructions for this page to be provided later.</p>
                 </div>
-                <DataEntryModal User={session.user.name} />
+                <DataEntryModal User={session.user.name} Industries={Industries} Companies={Companies} />
             </div>
 
             <Suspense fallback={<TableSkeleton />}>

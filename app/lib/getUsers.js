@@ -3,7 +3,7 @@ import User from "./models/User";
 
 export async function getAllUsers() {
     try {
-        // await new Promise((resolve) => setTimeout(resolve, 1000));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         console.log("Connecting to database...");
         await dbConnect();

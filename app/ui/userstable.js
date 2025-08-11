@@ -4,14 +4,13 @@ import DelUserForm from "./deluserform";
 
 export default async function UsersTable() {
     const users = await getAllUsers();
-    // console.log(data);
     // Convert data to a plain object
     const Users = JSON.parse(JSON.stringify(users));
     return (<>
         <div className="overflow-scroll w-full md:overflow-auto max-h-80 shadow-sm shadow-gray-300 rounded-xl md:flex-grow">
             <table className="table table-xs table-pin-rows bg-zinc-100">
                 <tbody>
-                    <tr className="text-black">
+                    <tr className="text-zinc-950/50">
                         <th>User</th>
                         <th>Email</th>
                         <th>Access</th>

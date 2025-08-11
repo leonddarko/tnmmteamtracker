@@ -22,7 +22,7 @@ export default function Home() {
               className=" mb-2"
             />
             <div className=" text-sm text-zinc-700">TrueNorth Media Monitoring Ltd</div>
-            <h1 className=" text-5xl font-bold text-black max-w-md ">Team Progress Tracker</h1>
+            <h1 className=" text-5xl font-bold text-black max-w-md ">Manual Entry & Progress Tracker</h1>
           </div>
 
           <div className="px-6 py-6 rounded-b-2xl bg-zinc-50 shadow-sm">

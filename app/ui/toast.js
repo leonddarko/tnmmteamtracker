@@ -5,7 +5,7 @@ export default function ToastAlert({ stateVar, textColor, text, onClick, iconHin
 
         <div className="toast toast-center p-1 bottom-5 z-50">
             <div
-                className={`${stateVar === false ? "hidden" : ""} alert flex justify-between items-center gap-2 border-0 shadow-sm py-1.5 rounded-full bg-cyan-100 ${textColor}`}
+                className={`${stateVar === false ? "hidden" : ""} alert flex justify-between items-center gap-2 border-0 shadow-sm py-1.5 rounded-full bg-cyan-50 ${textColor}`}
             >
                 {iconHint === "success" && <CircleCheck size={17} />}
                 {iconHint === "internalerror" && <ServerCog size={17} />}

@@ -4,7 +4,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { signOut, useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
-import { Dot, EllipsisVertical, LayoutDashboard, LogOut, Moon, MoonStar, MoveRight, RadioTower, ShieldOff, ShieldUser, SunDim, SunMedium, User, Users } from "lucide-react"
+import { Building, Dot, EllipsisVertical, Factory, LayoutDashboard, LogOut, Moon, MoonStar, MoveRight, RadioTower, ShieldOff, ShieldUser, SunDim, SunMedium, User, Users } from "lucide-react"
 
 export default function SideNavigation({ UserAccess }) {
     const { data: session, status } = useSession();
@@ -35,6 +35,18 @@ export default function SideNavigation({ UserAccess }) {
             linkname: "Stations",
             icon: RadioTower,
         },
+        {
+            id: 4,
+            path: "/industries-categories",
+            linkname: "Industries & Cate.",
+            icon: Factory,
+        },
+        {
+            id: 5,
+            path: "/companies",
+            linkname: "Companies, Brands & Var.",
+            icon: Building,
+        },
     ]
 
     const houroftheday = new Date().getHours();
@@ -55,7 +67,7 @@ export default function SideNavigation({ UserAccess }) {
                             />
                             <div className="w-full md:w-32">
                                 <p className="font-notosans font-normal text-cyan-900 text-xs leading-none pl-0.5">True North Media Monitoring Ltd</p>
-                                <h1 className="font-notosans font-black text-cyan-950 text-2xl leading-none">Team Progress Tracker</h1>
+                                <h1 className="font-notosans font-black text-cyan-950 text-2xl leading-none">Manual Entry & Progress Tracker</h1>
                             </div>
                         </div>
                     </Link>
