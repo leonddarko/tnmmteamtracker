@@ -2,25 +2,25 @@ import { Schema, model, models } from "mongoose";
 
 const entrySchema = new Schema({
     station: String,
-    date: {
-        type: Date,
-        required: true,
-    },
+    date: String,
     timestamp: String,
     title: String,
     product: String,
     duration: String,
     language: String,
     program: String,
-    brandgeneric: String,
-    brandvariant: String,
-    brandvariant: String,
-    company: String,
+    rate: String,
     industry: String,
     category: String,
+    company: String,
+    brand: String,
+    variant: String,
+    country: String,
     timesubmitted: String,
     user: String,
 });
+
+// entrySchema.index({user: "text", country: "text", company: "text", station: "text", product: "text"});
 
 const Entry = models.Entry || model("Entry", entrySchema);
 export default Entry;

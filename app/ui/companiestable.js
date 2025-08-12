@@ -21,9 +21,9 @@ export default async function CompaniesTable() {
                         </tbody>
                         <tbody>
                             {Companies.map((item) => (
-                                <tr className="text-black text-xs hover:bg-zinc-100">
-                                    <td className="font-bold">{item.company}</td>
-                                    <td className="font-bold">{item.country}</td>
+                                <tr key={item._id} className="text-black text-xs hover:bg-zinc-100">
+                                    <td className="font-semibold text-sm">{item.company}</td>
+                                    <td className="font-normal">{item.country}</td>
                                     <td className="flex justify-end items-center">
                                         <DelCompanyForm id={item._id} />
                                     </td>

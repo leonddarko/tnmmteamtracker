@@ -1,68 +1,63 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-// import GoogleProvider from "next-auth/providers/google";
-// import GitHubProvider from "next-auth/providers/github";
 
 const handler = NextAuth({
   providers: [
     CredentialsProvider({
-      // The name to display on the sign in form (e.g. 'Sign in with...')
       name: "Credentials",
-      // The credentials is used to generate a suitable form on the sign in page.
-      // You can specify whatever fields you are expecting to be submitted.
-      // e.g. domain, username, password, 2FA token, etc.
-      // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        email: {
-          label: "Email",
-          type: "text",
-          required: true,
-        },
-        password: {
-          label: "password",
-          type: "password",
-          required: true,
-        },
+        email: { label: "Email", type: "text", required: true },
+        country: { label: "Country", type: "text", required: true },
+        password: { label: "Password", type: "password", required: true },
       },
-      async authorize(credentials, req) {
-        // console.log(credentials);
-        // You need to provide your own logic here that takes the credentials
-        // submitted and returns either a object representing a user or value
-        // that is false/null if the credentials are invalid.
-        // e.g. return { id: 1, name: 'J Smith', email: 'jsmith@example.com' }
-        // You can also use the `req` object to obtain additional parameters
-        // (i.e., the request IP address)
-        const res = await fetch(
-        //   "https://tnmmprintsdatabase-orcin.vercel.app/api/checkcredentials",
-          "http://localhost:3000/api/checkcredentials",
-          {
+      async authorize(credentials) {
+        try {
+          const res = await fetch(`${process.env.NEXTAUTH_URL}/api/checkcredentials`, {
             method: "POST",
-            body: JSON.stringify(credentials),
             headers: { "Content-Type": "application/json" },
-          }
-        );
-        const user = await res.json();
+            body: JSON.stringify(credentials),
+          });
 
-        console.log(user);
+          if (!res.ok) return null;
 
-        // If no error and we have user data, return it
-        if (res.ok && user) {
-          return user;
+          const user = await res.json();
+          console.log("Authorize returning user:", user);
+          return user || null;
+        } catch (err) {
+          console.error("Authorize error:", err);
+          return null;
         }
-        // Return null if user data could not be retrieved
-        return null;
       },
     }),
   ],
+  pages: {
+    signIn: '/auth/signin',
+  },
   session: {
-    maxAge: 24 * 60 * 60, // 1 day (in seconds)
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60,
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      // console.log("JWT callback - before:", { token, user });
+      if (user) {
+        token.id = user.id;
+        token.country = user.country;
+      }
+      // console.log("JWT callback - after:", token);
+      return token;
+    },
+    async session({ session, token }) {
+      // console.log("Session callback - before:", session);
+      session.user.id = token.id;
+      session.user.country = token.country;
+      // console.log("Session callback - after:", session);
+      return session;
+    },
   },
   theme: {
-    colorScheme: "light", // "auto" | "dark" | "light"
-    brandColor: "", // Hex color code
-    buttonText: "" // Hex color code
-  }
+    colorScheme: "light",
+  },
+});
 
-})
-
-export { handler as GET, handler as POST }
+export { handler as GET, handler as POST };

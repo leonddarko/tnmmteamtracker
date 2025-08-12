@@ -6,7 +6,7 @@ export async function POST(request) {
 
     try {
         const req = await request.json();
-        const { station, type } = req;
+        const { station, type, country } = req;
         console.log(req);
 
         console.log("Connecting to database...");
@@ -17,6 +17,7 @@ export async function POST(request) {
         const newstation = await Station({
             name: station,
             type,
+            country,
         }).save();
         console.log("Station saved...");
         console.log(newstation);

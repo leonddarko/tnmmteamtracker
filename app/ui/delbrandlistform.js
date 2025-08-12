@@ -4,12 +4,12 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import ToastAlert from "./toast";
 
-export default function DelCategoryListForm({ id }) {
+export default function DelBrandListForm({ id }) {
     const [deleting, setdeleting] = useState(false);
     const [deleted, setdeleted] = useState(false);
     const [internalerror, setinternalerror] = useState(false);
 
-    const handleCategorylistDeletion = async (event) => {
+    const handleBrandlistDeletion = async (event) => {
         event.preventDefault();
         setdeleting(true)
 
@@ -21,7 +21,7 @@ export default function DelCategoryListForm({ id }) {
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/deletecategorylist";
+        const endpoint = "/api/deletebrandlist";
 
         // Form the request for sending data to the server.
         const options = {
@@ -60,7 +60,7 @@ export default function DelCategoryListForm({ id }) {
             <form className="flex items-center" >
                 {deleting === false && (
                     <button
-                        onClick={handleCategorylistDeletion}
+                        onClick={handleBrandlistDeletion}
                         type="submit"
                         className="btn-xs flex justify-start items-center gap-1 bg-white text-red-700 rounded-full font-sans font-semibold text-xs p-1">
                         <Trash2 size={13} className="" />
@@ -79,7 +79,7 @@ export default function DelCategoryListForm({ id }) {
             <ToastAlert
                 stateVar={deleted}
                 textColor=" text-red-500"
-                text="Category list deleted"
+                text="Brand list deleted"
                 onClick={() => setdeleted(false)}
                 iconHint="success"
             />
@@ -93,4 +93,5 @@ export default function DelCategoryListForm({ id }) {
             />
         </>
     )
+
 }

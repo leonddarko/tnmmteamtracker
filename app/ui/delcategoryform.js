@@ -61,7 +61,7 @@ export default function DelCategoryForm({ id, cate }) {
 
     return (
         <>
-            <form >
+            <form>
                 {deleting === false && (
                     <button
                         onClick={handleCategoryDeletion}

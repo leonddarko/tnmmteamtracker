@@ -1,9 +1,15 @@
 import { Building, Save, Earth, X, Paperclip, Newspaper, Radio, Tv, RadioTower } from "lucide-react";
 import { stationtype } from "../lib/data";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSession } from "next-auth/react";
 import ToastAlert from "./toast";
 
 export default function AddStationForm() {
+    const { data: session, update } = useSession({ required: "true" });
+    useEffect(() => {
+        update(); // force refetch from /api/auth/session
+    }, []);
+
     const [adding, setadding] = useState(false)
     const [stationadded, setstationadded] = useState(false)
     const [internalerror, setinternalerror] = useState(false);
@@ -14,10 +20,12 @@ export default function AddStationForm() {
 
         const station = event.target.station.value;
         const type = event.target.type.value;
+        const country = event.target.country.value;
 
         const data = {
             station,
             type,
+            country,
         }
 
         // console.log(data);
@@ -63,28 +71,33 @@ export default function AddStationForm() {
     return (
         <>
             <form onSubmit={handleFormSubmit}>
-                <div className="flex flex-wrap justify-start items-center gap-4 mb-4">
-                    <div className="grow">
-                        <div className="label">
+                <div className="mb-4">
+                    <div className="grow mb-4">
+                        {/* <div className="label">
                             <span className="label-text font-normal text-black">Station</span>
-                        </div>
+                        </div> */}
                         <label className="input input-sm flex w-full md:max-w-2xl items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
 
                             <input name="station" type="text" className="grow font-semibold text-black" placeholder="Station name" required />
                         </label>
                     </div>
-                    <div className="grow">
-                        <div className="label">
-                            <span className="label-text font-normal text-black">
-                                <RadioTower size={15} className="text-cyan-700" />
-                            </span>
-                        </div>
-                        <select name="type" className="select select-sm w-full rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required>
+
+                    <div className="grow mb-4">
+                        <select name="type" className="select select-sm w-full rounded-md shadow-sm bg-zinc-100 text-black font-semibold" defaultValue="" required>
+                            <option className="text-xs" value="" disabled>Station Type</option>
                             {stationtype.map((item) => (
                                 <option key={item.id} className="text-sm" value={item.type}>{item.type}</option>
                             ))}
                         </select>
                     </div>
+
+                    <select
+                        name="country"
+                        className="select select-sm w-full rounded-full shadow-sm bg-zinc-100 text-black font-semibold"
+                        required defaultValue=""
+                    >
+                        <option className="text-xs" value={session.user.country}>{session.user.country}</option>
+                    </select>
                 </div>
 
                 <div className="flex justify-between items-center gap-3">

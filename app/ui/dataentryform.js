@@ -1,21 +1,45 @@
 "use client"
 
-import { CloudUpload, Plus, Text, TimerIcon, User2, X } from "lucide-react";
+import { Banknote, CloudUpload, Plus, Text, TimerIcon, User2, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { languages, products } from "../lib/data";
-import { countries } from "../lib/data";
+import { useSession } from "next-auth/react"
+import axios from "axios";
+import ToastAlert from "./toast";
+import Image from "next/image";
 
-export default function DataEntryForm({ User, Industries, Companies }) {
-    const [saving, setsaving] = useState(false)
+export default function DataEntryForm({ UserID, User, Industries, Companies }) {
+    const { data: session, update } = useSession({ required: "true" });
+
+    useEffect(() => {
+        update(); // force refetch from /api/auth/session
+    }, []);
+
+
+    const [saving, setsaving] = useState(false);
+    const [entrysaved, setentrysaved] = useState(false)
     const [internalerror, setinternalerror] = useState(false);
 
+    const [stations, setStations] = useState([]);
+
+
     const [industryID, setindustryID] = useState("")
+    const [industryName, setIndustryName] = useState('');
     const [industryCategories, setIndustryCategories] = useState([]);
 
-    console.log(industryID);
+    const [companyID, setcompanyID] = useState("")
+    const [companyName, setCompanyName] = useState('');
+    const [brands, setBrands] = useState([]);
+    const [variants, setVariants] = useState([]);
 
+    useEffect(() => {
+        if (!UserID) return;
+        axios.get(`/api/user-stations?userId=${UserID}`).then(res => {
+            setStations(res.data);
+        });
+    }, [session]);
 
-    const [currentTime, setCurrentTime] = useState("");
+    // Fetching Categories by passing industryID
     useEffect(() => {
         if (!industryID) return;
 
@@ -29,6 +53,23 @@ export default function DataEntryForm({ User, Industries, Companies }) {
     }, [industryID]);
 
 
+    // Fetching Brands and Variants by passing companyID
+    useEffect(() => {
+        if (!companyID) return;
+
+        const fetchBrandsVariants = async () => {
+            const res = await fetch(`/api/brandsvariants?company=${companyID}`);
+            const data = await res.json();
+            setBrands(data.brands || []);
+            setVariants(data.variants || []);
+        }
+
+        fetchBrandsVariants();
+
+    }, [companyID])
+
+
+    const [currentTime, setCurrentTime] = useState("");
     useEffect(() => {
         const updateTime = () => {
             const now = new Date();
@@ -42,9 +83,92 @@ export default function DataEntryForm({ User, Industries, Companies }) {
         return () => clearInterval(intervalId);
     }, []);
 
+
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         setsaving(true);
+
+        const station = event.target.station.value;
+        const date = event.target.date.value;
+        const timestamp = event.target.timestamp.value;
+        const title = event.target.title.value;
+
+        const product = event.target.product.value;
+        const duration = event.target.duration.value;
+        const language = event.target.language.value;
+        const program = event.target.program.value;
+        const rate = event.target.rate.value;
+
+        const industry = industryName;
+        const category = event.target.category.value;
+
+        const company = companyName;
+        const brand = event.target.brand.value;
+        const variant = event.target.variant.value;
+
+        const country = event.target.country.value;
+        const timesubmitted = event.target.timesubmitted.value;
+        const user = event.target.user.value;
+
+        const data = {
+            station,
+            date,
+            timestamp,
+            title,
+            product,
+            duration,
+            language,
+            program,
+            rate,
+            industry,
+            category,
+            company,
+            brand,
+            variant,
+            country,
+            timesubmitted,
+            user,
+        }
+
+
+        // console.log(data);
+        // setsaving(false);
+
+        // Send the data to the server in JSON format.
+        const JSONdata = JSON.stringify(data);
+
+        // API endpoint where we send form data.
+        const endpoint = "/api/saveentry";
+
+        // Form the request for sending data to the server.
+        const options = {
+            // The method is POST because we are sending data.
+            method: "POST",
+            // Tell the server we're sending JSON.
+            headers: {
+                "Content-Type": "application/json",
+            },
+            // Body of the request is the JSON data we created above.
+            body: JSONdata,
+        };
+
+        // Send the form data to our forms API and get a response.
+        const response = await fetch(endpoint, options);
+
+        // Get the response data from server as JSON.
+        const result = await response.json();
+        console.log(result);
+
+        if (result.okay) {
+            setentrysaved(true)
+            setsaving(false)
+            // event.target.reset();
+            // setTimeout(() => { location.reload(true); }, 1000);
+        } else {
+            setinternalerror(true)
+            setsaving(false)
+        }
+
     }
 
     return (
@@ -55,14 +179,12 @@ export default function DataEntryForm({ User, Industries, Companies }) {
                     {/* Station Selection */}
                     <div>
                         <div className="label flex justify-start items-center gap-1">
-                            {/* <a href="/companies" className=" inline-block p-0.5 rounded-lg bg-zinc-200 shadow-sm">
-                                <Plus size={13} className="text-red-700" />
-                            </a> */}
                         </div>
                         <select name="station" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
                             <option className="text-xs" value="" disabled>Select Station</option>
-                            <option className="text-sm" value="TV3">TV3</option>
-                            <option className="text-sm" value="TVXYZ">TVXYZ</option>
+                            {stations.map((station) => (
+                                <option key={station._id} className="text-sm" value={station.name}>{station.name}</option>
+                            ))}
                         </select>
                     </div>
 
@@ -83,6 +205,7 @@ export default function DataEntryForm({ User, Industries, Companies }) {
                         type="time"
                         className="py-0.5 px-1 rounded-md focus:outline-none shadow-sm bg-cyan-950 text-white"
                         step={1}
+                        required
                     />
 
                     {/* Title Entry */}
@@ -109,7 +232,7 @@ export default function DataEntryForm({ User, Industries, Companies }) {
                     </div>
 
                     {/* Duration Selection */}
-                    <div className="">
+                    <div>
                         <label className="input input-sm flex items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
                             <TimerIcon size={20} className="text-cyan-950" />
                             <input name="duration" type="number" min={0} className="grow font-semibold text-black" placeholder="Duration" required />
@@ -134,18 +257,29 @@ export default function DataEntryForm({ User, Industries, Companies }) {
                             <option className="text-sm" value="News 360">News 360</option>
                         </select>
                     </div>
+
+                    {/* Rate Selection */}
+                    <div className="">
+                        <label className="input input-sm flex items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
+                            <Banknote size={20} className="text-cyan-950" />
+                            <input name="rate" type="number" min={0} className="grow font-semibold text-black" placeholder="Rate" required />
+                        </label>
+                    </div>
                 </div>
 
                 <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
                     {/* Industry */}
                     <div>
                         <select
-                            name="Industry"
+                            name="industry"
                             className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold"
                             required
                             defaultValue=""
                             onChange={(e) => {
-                                setindustryID(e.target.value);
+                                const selectedID = e.target.value;
+                                setindustryID(selectedID);
+                                const selectedIndustry = Industries.find(item => item._id === selectedID);
+                                setIndustryName(selectedIndustry?.industry || '');
                             }}
                         >
                             <option className="text-xs" value="" disabled>Select Industry </option>
@@ -169,13 +303,23 @@ export default function DataEntryForm({ User, Industries, Companies }) {
                         </select>
                     </div>
 
-
                     {/* Company */}
                     <div>
-                        <select name="Company" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                        <select
+                            name="company"
+                            className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold"
+                            required
+                            defaultValue=""
+                            onChange={(e) => {
+                                const selectedID = e.target.value;
+                                setcompanyID(selectedID);
+                                const selectedCompany = Companies.find(item => item._id === selectedID);
+                                setCompanyName(selectedCompany?.company || '')
+                            }}
+                        >
                             <option className="text-xs" value="" disabled>Select Company </option>
                             {Companies.map((item) => (
-                                <option key={item._id} className="text-sm" value={item.company}>
+                                <option key={item._id} className="text-sm" value={item._id}>
                                     {item.company} | {item.country === "Ghana" && "GH" || item.country === "Nigeria" && "NG" || item.country === "Côte d'Ivoire" && "CI"}
                                 </option>
                             ))}
@@ -184,37 +328,70 @@ export default function DataEntryForm({ User, Industries, Companies }) {
 
                     {/* Brand Generic Selection*/}
                     <div>
-                        <select name="brandgeneric" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                            <option className="text-xs" value="" disabled>Brand Generic </option>
-                            <option className="text-sm" value="Promasidor">Generic</option>
-                            <option className="text-sm" value="Telefonika">Generic</option>
+                        <select name="brand" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                            <option className="text-xs" value="" disabled>
+                                {!companyID ? "Select Company first" : "Select Brand Generic"}
+                            </option>
+                            {brands.map((brand, idx) => (
+                                <option key={idx} value={brand}>
+                                    {brand}
+                                </option>
+                            ))}
                         </select>
                     </div>
 
                     {/* Brand Variant Selection*/}
                     <div>
-                        <select name="brandvariant" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                            <option className="text-xs" value="" disabled>Brand Variant </option>
-                            <option className="text-sm" value="Promasidor">Variant</option>
-                            <option className="text-sm" value="Telefonika">Variant</option>
+                        <select name="variant" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                            <option className="text-xs" value="" disabled>
+                                {!companyID ? "Select Company first" : "Select Brand Variant"}
+                            </option>
+                            {variants.map((vari, idx) => (
+                                <option key={idx} value={vari}>
+                                    {vari}
+                                </option>
+                            ))}
                         </select>
                     </div>
                 </div>
 
                 <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
-
                     <div className="flex justify-start items-center gap-2">
-                        <i className="fas fa-globe-africa text-cyan-950"></i>
-                        <select 
-                        name="country" 
-                        className="select select-sm w-full rounded-full shadow-sm bg-zinc-100 text-black font-semibold" 
-                        required defaultValue=""
-
+                        {session && (
+                            <>
+                                <Image
+                                    className={`${session.user.country !== "Ghana" && "hidden"} rounded-sm`}
+                                    src="https://flagcdn.com/w40/gh.png"
+                                    width={20}
+                                    height={20}
+                                    alt="Ghana"
+                                />
+                                <Image
+                                    className={`${session.user.country !== "Nigeria" && "hidden"} rounded-sm`}
+                                    src="https://flagcdn.com/w40/ng.png"
+                                    width={20}
+                                    height={20}
+                                    alt="Nigeria"
+                                />
+                                <Image
+                                    className={`${session.user.country !== "Côte d'Ivoire" && "hidden"} rounded-sm`}
+                                    src="https://flagcdn.com/w40/ci.png"
+                                    width={20}
+                                    height={20}
+                                    alt="Côte d'Ivoire"
+                                />
+                            </>
+                        )}
+                        <select
+                            name="country"
+                            className="select select-sm w-full rounded-full shadow-sm bg-zinc-100 text-black font-semibold"
+                            required defaultValue=""
                         >
-                            <option className="text-xs" value="" disabled>Select your Country</option>
-                            {countries.slice(1).map((item) => (
+                            <option className="text-xs" value={session.user.country}>{session.user.country}</option>
+
+                            {/* {countries.slice(1).map((item) => (
                                 <option key={item.id} className="text-sm" value={item.country}>{item.country}</option>
-                            ))}
+                            ))} */}
                         </select>
                     </div>
 
@@ -275,6 +452,22 @@ export default function DataEntryForm({ User, Industries, Companies }) {
                     </div>
                 </div>
             </form>
+
+            <ToastAlert
+                stateVar={entrysaved}
+                textColor="text-cyan-950"
+                text="Entry saved."
+                onClick={() => setentrysaved(false)}
+                iconHint="success"
+            />
+
+            <ToastAlert
+                stateVar={internalerror}
+                textColor=" text-red-500"
+                text="Something went wrong. Try again."
+                onClick={() => setinternalerror(false)}
+                iconHint="internalerror"
+            />
         </>
     )
 }

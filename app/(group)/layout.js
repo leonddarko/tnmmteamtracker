@@ -8,7 +8,7 @@ import userAccess from "../lib/getUserAccess";
 
 export default async function Layout({ children }) {
     const session = await getServerSession();
-    !session || !session.user ? redirect("/signin") : null
+    !session || !session.user ? redirect("/") : null
 
     const useraccess = await userAccess(session.user.email);
 

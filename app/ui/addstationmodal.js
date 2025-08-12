@@ -15,7 +15,7 @@ export default function AddStationModal() {
         </button>
 
         <dialog id="addstation_modal" className="modal">
-            <div className="modal-box max-w-2xl bg-zinc-50">
+            <div className="modal-box w-80 bg-zinc-50">
                 <form method="dialog">
                     {/* if there is a button in form, it will close the modal */}
                     <button className="btn-sm btn-circle btn-ghost absolute right-2 top-2">

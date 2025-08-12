@@ -1,27 +1,31 @@
 "use client"
 
-import { Trash2 } from "lucide-react";
+import { Trash } from "lucide-react";
 import { useState } from "react";
 import ToastAlert from "./toast";
 
-export default function DelCategoryListForm({ id }) {
+export default function DelBrandForm({ id, brand }) {
     const [deleting, setdeleting] = useState(false);
     const [deleted, setdeleted] = useState(false);
     const [internalerror, setinternalerror] = useState(false);
 
-    const handleCategorylistDeletion = async (event) => {
+    const handleBrandDeletion = async (event) => {
         event.preventDefault();
         setdeleting(true)
 
+        // const id = event.target.id.value;
+        // console.log(id);
+
         const data = {
             id,
+            brand
         }
 
         // Send the data to the server in JSON format.
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/deletecategorylist";
+        const endpoint = "/api/deletebrand";
 
         // Form the request for sending data to the server.
         const options = {
@@ -57,21 +61,23 @@ export default function DelCategoryListForm({ id }) {
 
     return (
         <>
-            <form className="flex items-center" >
+            <form>
                 {deleting === false && (
                     <button
-                        onClick={handleCategorylistDeletion}
+                        onClick={handleBrandDeletion}
                         type="submit"
-                        className="btn-xs flex justify-start items-center gap-1 bg-white text-red-700 rounded-full font-sans font-semibold text-xs p-1">
-                        <Trash2 size={13} className="" />
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-white rounded-full font-sans font-semibold text-xs px-2 py-0.5">
+                        <Trash size={13} className="" />
+                        <span>Delete</span>
                     </button>
                 )}
 
                 {deleting === true && (
                     <button
                         type="button"
-                        className="btn-xs flex justify-start items-center gap-1 bg-white/50 text-red-700 rounded-full font-sans font-semibold text-xs p-1 btn-disabled">
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-100 text-red-700 rounded-full font-sans font-semibold text-xs px-2 py-0.5 opacity-80 btn-disabled">
                         <span className="loading loading-spinner loading-xs text-red-green"></span>
+                        <span>Deleting...</span>
                     </button>
                 )}
             </form>
@@ -79,7 +85,7 @@ export default function DelCategoryListForm({ id }) {
             <ToastAlert
                 stateVar={deleted}
                 textColor=" text-red-500"
-                text="Category list deleted"
+                text="Brand deleted"
                 onClick={() => setdeleted(false)}
                 iconHint="success"
             />

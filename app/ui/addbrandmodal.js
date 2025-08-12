@@ -9,7 +9,7 @@ export default function AddBrandModal({ Companies }) {
         <button
             onClick={() => document.getElementById('brand_modal').showModal()}
             type="button"
-            className="btn-xs flex justify-start items-center gap-1 bg-cyan-950 text-white rounded-full font-sans font-semibold text-xs px-2 py-1.5">
+            className="btn-xs flex justify-start items-center gap-1 bg-cyan-900 text-white rounded-full font-sans font-semibold text-xs px-2 py-1.5">
             <Plus size={13} className="" />
             <span>Add Brand</span>
         </button>
@@ -24,7 +24,7 @@ export default function AddBrandModal({ Companies }) {
                 </form>
                 <div className="mb-5">
                     <h1 className="text-xl text-cyan-950 font-notosans font-bold leading-none">Add New Brand</h1>
-                    <span className="label-text text-xs text-zinc-800">Enter your new brand name and save.</span>
+                    <span className="label-text text-xs text-zinc-800">Select a Company, enter a Brand and save.</span>
                 </div>
                 <AddBrandForm Companies={Companies} />
             </div>

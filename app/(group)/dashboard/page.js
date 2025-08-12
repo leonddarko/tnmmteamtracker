@@ -12,7 +12,9 @@ import getCompanies from "@/app/lib/getCompanies";
 
 export default async function Dashboard() {
     const session = await getServerSession()
-    const userID = await getUserID(session.user.email);
+    console.log(session);
+    
+    const userID = await getUserID(session?.user.email);
 
     const industries = await getAllIndustries();
     const categories = await getAllCategories();
@@ -22,7 +24,6 @@ export default async function Dashboard() {
     const Industries = JSON.parse(JSON.stringify(industries));
     const Categories = JSON.parse(JSON.stringify(categories));
     const Companies = JSON.parse(JSON.stringify(companies));
-
 
     return (
         <div className="py-6 md:pt-24 px-4 md:px-10 h-screen rounded-lg bg-white/70 shadow-sm overflow-scroll">
@@ -35,10 +36,10 @@ export default async function Dashboard() {
                             <span className="text-xs">Homepage</span>
                         </button>
                     </Link>
-                    <h1 className=" text-3xl text-cyan-950 font-notosans font-bold leading-none">{session.user.name}</h1>
-                    <p className="label-text text-cyan-950">Detailed instructions for this page to be provided later.</p>
+                    <h1 className=" text-3xl text-cyan-950 font-notosans font-bold leading-none">{session?.user.name}</h1>
+                    {/* <p className="label-text text-cyan-950">Detailed instructions for this page to be provided later.</p> */}
                 </div>
-                <DataEntryModal User={session.user.name} Industries={Industries} Companies={Companies} />
+                <DataEntryModal User={session?.user.name} UserID={userID} Industries={Industries} Companies={Companies} />
             </div>
 
             <Suspense fallback={<TableSkeleton />}>

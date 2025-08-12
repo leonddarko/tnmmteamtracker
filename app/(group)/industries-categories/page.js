@@ -7,6 +7,7 @@ import getAllIndustries from "@/app/lib/getIndustries";
 import getAllCategories from "@/app/lib/getCategories";
 import IndustriesTable from "@/app/ui/industriestable";
 import CategoriesTable from "@/app/ui/categoriestable";
+import UnauthorizedAccess from "@/app/ui/unauthorizedaccess";
 
 export default async function IndustriesCategories() {
     const session = await getServerSession()

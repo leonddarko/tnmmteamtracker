@@ -5,13 +5,20 @@ import Image from "next/image"
 import { signOut, useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import { Building, Dot, EllipsisVertical, Factory, LayoutDashboard, LogOut, Moon, MoonStar, MoveRight, RadioTower, ShieldOff, ShieldUser, SunDim, SunMedium, User, Users } from "lucide-react"
+import { useEffect } from "react"
 
 export default function SideNavigation({ UserAccess }) {
-    const { data: session, status } = useSession();
+    const { data: session, status, update } = useSession({ required: "true" });
+
+    useEffect(() => {
+        update(); // force refetch from /api/auth/session
+    }, []);
+
+
     const pathname = usePathname()
 
     const navlinks = [
-         {
+        {
             id: 0,
             path: "/administration",
             linkname: "Administration",
@@ -68,12 +75,42 @@ export default function SideNavigation({ UserAccess }) {
                             <div className="w-full md:w-32">
                                 <p className="font-notosans font-normal text-cyan-900 text-xs leading-none pl-0.5">True North Media Monitoring Ltd</p>
                                 <h1 className="font-notosans font-black text-cyan-950 text-2xl leading-none">Manual Entry & Progress Tracker</h1>
+                                <div className="flex flex-row justify-start items-center gap-2 pl-0.5 mt-2">
+                                    {status === "loading" && (<span className="loading loading-spinner loading-xs text-cyan-950"></span>)}
+                                    {status === "authenticated" && (
+                                        <>
+                                            <Image
+                                                className={`${session.user.country !== "Ghana" && "hidden"} rounded-sm`}
+                                                src="https://flagcdn.com/w40/gh.png"
+                                                width={20}
+                                                height={20}
+                                                alt="Ghana"
+                                            />
+                                            <Image
+                                                className={`${session.user.country !== "Nigeria" && "hidden"} rounded-sm`}
+                                                src="https://flagcdn.com/w40/ng.png"
+                                                width={20}
+                                                height={20}
+                                                alt="Nigeria"
+                                            />
+                                            <Image
+                                                className={`${session.user.country !== "Côte d'Ivoire" && "hidden"} rounded-sm`}
+                                                src="https://flagcdn.com/w40/ci.png"
+                                                width={20}
+                                                height={20}
+                                                alt="Côte d'Ivoire"
+                                            />
+                                        </>
+                                    )}
+                                    {status === "authenticated" && (<span className="text-cyan-950 text-xs">{session.user.country}</span>)}
+
+                                </div>
                             </div>
                         </div>
                     </Link>
 
                     {/* Small Screen Navigation */}
-                    <div className="dropdown dropdown-end">
+                    <div className="dropdown dropdown-end md:hidden">
                         <button tabIndex={0} role="button"
                             className="btn py-0 px-2 border-0 text-black bg-zinc-50 shadow-sm hover:bg-zinc-100 md:hidden">
                             <EllipsisVertical size={15} />

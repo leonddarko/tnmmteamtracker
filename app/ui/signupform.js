@@ -7,6 +7,7 @@ import { useState } from "react"
 import _ from "lodash"
 import { redirect } from "next/navigation"
 import ToastAlert from "./toast"
+import { signIn } from "next-auth/react"
 
 export default function SignupForm({ Stations }) {
     const [creating, setcreating] = useState(false);
@@ -147,18 +148,17 @@ export default function SignupForm({ Stations }) {
 
                 <div className="flex justify-end items-center gap-3">
                     {creating === false && (
-                        <Link href="/signin">
                             <button
+                                onClick={() => signIn()}
                                 type="button"
-                                className="btn-ghost text-black rounded-full font-sans font-semibold text-xs p-1">
+                                className="btn-ghost text-black rounded-full font-sans font-semibold text-xs p-1 cursor-pointer">
                                 Have credentials? Sign in.
                             </button>
-                        </Link>
                     )}
                     {creating === false && (
                         <button
                             type="submit"
-                            className="btn-sm bg-cyan-900 rounded-full px-3 py-1 text-white font-sans font-bold text-xs">
+                            className="btn-sm bg-cyan-900 rounded-full px-3 py-1 text-white font-sans font-bold text-xs cursor-pointer">
                             Create
                         </button>
                     )}

@@ -1,12 +1,14 @@
 import { Save } from "lucide-react";
 import { useState } from "react";
+import ToastAlert from "./toast";
+
 
 export default function AddBrandForm({ Companies }) {
     const [adding, setadding] = useState(false)
     const [brandadded, setbrandadded] = useState(false)
     const [internalerror, setinternalerror] = useState(false);
 
-        const handleFormSubmit = async (event) => {
+    const handleFormSubmit = async (event) => {
         event.preventDefault();
         setadding(true)
 
@@ -46,7 +48,7 @@ export default function AddBrandForm({ Companies }) {
         console.log(result);
 
         if (result.okay) {
-            setcategoryadded(true);
+            setbrandadded(true);
             setadding(false);
             event.target.reset();
             setTimeout(() => {
@@ -60,7 +62,7 @@ export default function AddBrandForm({ Companies }) {
 
     return (
         <>
-            <form >
+            <form onSubmit={handleFormSubmit}>
                 <div className="mb-4">
                     <select name="companyId" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
                         <option className="text-xs" value="" disabled>Select Company</option>
@@ -100,6 +102,22 @@ export default function AddBrandForm({ Companies }) {
                     </div>
                 </div>
             </form>
+
+            <ToastAlert
+                stateVar={brandadded}
+                textColor="text-cyan-950"
+                text="Brand added."
+                onClick={() => setbrandadded(false)}
+                iconHint="success"
+            />
+
+            <ToastAlert
+                stateVar={internalerror}
+                textColor=" text-red-500"
+                text="Something went wrong. Try again."
+                onClick={() => setinternalerror(false)}
+                iconHint="internalerror"
+            />
         </>
     )
 
