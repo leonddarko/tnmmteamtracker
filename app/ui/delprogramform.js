@@ -1,27 +1,31 @@
 "use client"
 
 import { Trash } from "lucide-react";
-import ToastAlert from "./toast";
 import { useState } from "react";
+import ToastAlert from "./toast";
 
-export default function DelCompanyForm({ id }) {
+export default function DelProgramForm({ id, program }) {
     const [deleting, setdeleting] = useState(false);
     const [deleted, setdeleted] = useState(false);
     const [internalerror, setinternalerror] = useState(false);
 
-    const handleCompanyDeletion = async (event) => {
+    const handleProgramDeletion = async (event) => {
         event.preventDefault();
         setdeleting(true)
 
+        // const id = event.target.id.value;
+        // console.log(id);
+
         const data = {
-            id
+            id,
+            program
         }
 
         // Send the data to the server in JSON format.
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/deletecompany";
+        const endpoint = "/api/deleteprogram";
 
         // Form the request for sending data to the server.
         const options = {
@@ -47,7 +51,7 @@ export default function DelCompanyForm({ id }) {
             setdeleting(false)
             setTimeout(() => {
                 location.reload(true);
-            }, 500);
+            }, 1000);
         } else {
             setdeleting(false)
             setinternalerror(true)
@@ -57,10 +61,10 @@ export default function DelCompanyForm({ id }) {
 
     return (
         <>
-            <form onSubmit={handleCompanyDeletion} >
+            <form>
                 {deleting === false && (
                     <button
-                        onClick={handleCompanyDeletion}
+                        onClick={handleProgramDeletion}
                         type="submit"
                         className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-white rounded-full font-sans font-semibold text-xs px-2 py-0.5">
                         <Trash size={13} className="" />
@@ -76,12 +80,12 @@ export default function DelCompanyForm({ id }) {
                         <span>Deleting...</span>
                     </button>
                 )}
-
             </form>
+
             <ToastAlert
                 stateVar={deleted}
                 textColor=" text-red-500"
-                text="Company deleted"
+                text="Program deleted"
                 onClick={() => setdeleted(false)}
                 iconHint="success"
             />
@@ -95,5 +99,4 @@ export default function DelCompanyForm({ id }) {
             />
         </>
     )
-
 }

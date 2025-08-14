@@ -21,6 +21,7 @@ export async function GET(request) {
         if (!categoryDoc) {
             return NextResponse.json({ categories: [] });
         }
+        
         console.log(categoryDoc);
         return NextResponse.json({ categories: categoryDoc.categories });
         

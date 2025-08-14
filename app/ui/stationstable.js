@@ -20,7 +20,7 @@ export default function StationsTable({ Stations }) {
             {filteredStations.length > 0 && (
                 <table className="table table-xs table-pin-rows bg-zinc-100">
                     <tbody>
-                        <tr className="text-black">
+                        <tr className="text-cyan-950/50">
                             <th>Country</th>
                             <th>Station</th>
                             <th>Type</th>

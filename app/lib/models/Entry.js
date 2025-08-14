@@ -17,10 +17,14 @@ const entrySchema = new Schema({
     variant: String,
     country: String,
     timesubmitted: String,
+    datesubmitted: Date,
     user: String,
 });
 
-// entrySchema.index({user: "text", country: "text", company: "text", station: "text", product: "text"});
+entrySchema.index(
+    {user: "text", country: "text", company: "text", station: "text", product: "text"},
+    { language_override: "none" }
+);
 
 const Entry = models.Entry || model("Entry", entrySchema);
 export default Entry;

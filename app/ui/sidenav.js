@@ -39,7 +39,7 @@ export default function SideNavigation({ UserAccess }) {
         {
             id: 3,
             path: "/stations",
-            linkname: "Stations",
+            linkname: "Stations & Programs",
             icon: RadioTower,
         },
         {

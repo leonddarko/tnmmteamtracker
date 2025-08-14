@@ -10,14 +10,12 @@ export default function UserDashboard({ UserID }) {
     const [captureData, setCaptureData] = useState({});
     const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
 
-
     useEffect(() => {
         if (!UserID) return;
         axios.get(`/api/user-stations?userId=${UserID}`).then(res => {
             setStations(res.data);
         });
     }, [session]);
-
 
 
     useEffect(() => {
@@ -29,7 +27,6 @@ export default function UserDashboard({ UserID }) {
                 });
         });
     }, [stations, session, month]);
-
 
 
     const toggleDay = async (stationId, day) => {
@@ -49,14 +46,13 @@ export default function UserDashboard({ UserID }) {
     };
 
 
-
     const renderDayCheckboxes = (stationId) => {
         const [year, mon] = month.split('-').map(Number);
         const daysInMonth = new Date(year, mon, 0).getDate();
         const disabled = month < new Date().toISOString().slice(0, 7);
 
         return (
-            <div className="grid grid-cols-4 gap-1 mt-2">
+            <div className="grid grid-cols-4 mt-2">
                 {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => (
                     <label key={day} className="flex items-center space-x-2">
                         <input
@@ -89,8 +85,8 @@ export default function UserDashboard({ UserID }) {
             {stations.map(station => (
                 <>
                     {station.name !== "N/A" && (<>
-                        <div className="grid gap-4 mb-5">
-                            <div key={station._id} className="p-6 rounded-2xl bg-zinc-100 shadow">
+                        <div className="grid gap-4 mb-5 max-w-xs">
+                            <div key={station._id} className="p-6 rounded-3xl bg-cyan-50 shadow">
                                 <h2 className="text-lg font-semibold">{station.name} ({station.type})</h2>
                                 {renderDayCheckboxes(station._id)}
                             </div>

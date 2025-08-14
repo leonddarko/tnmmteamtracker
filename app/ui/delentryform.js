@@ -1,27 +1,30 @@
 "use client"
 
 import { Trash } from "lucide-react";
-import ToastAlert from "./toast";
 import { useState } from "react";
+import ToastAlert from "./toast";
 
-export default function DelCompanyForm({ id }) {
+export default function DelEntryForm({ id }) {
     const [deleting, setdeleting] = useState(false);
     const [deleted, setdeleted] = useState(false);
     const [internalerror, setinternalerror] = useState(false);
 
-    const handleCompanyDeletion = async (event) => {
+        const handleEntryDeletion = async (event) => {
         event.preventDefault();
         setdeleting(true)
 
+        // const id = event.target.id.value;
+        // console.log(id);
+
         const data = {
-            id
+            id,
         }
 
         // Send the data to the server in JSON format.
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/deletecompany";
+        const endpoint = "/api/delentry";
 
         // Form the request for sending data to the server.
         const options = {
@@ -47,7 +50,7 @@ export default function DelCompanyForm({ id }) {
             setdeleting(false)
             setTimeout(() => {
                 location.reload(true);
-            }, 500);
+            }, 1000);
         } else {
             setdeleting(false)
             setinternalerror(true)
@@ -57,12 +60,12 @@ export default function DelCompanyForm({ id }) {
 
     return (
         <>
-            <form onSubmit={handleCompanyDeletion} >
+            <form>
                 {deleting === false && (
                     <button
-                        onClick={handleCompanyDeletion}
+                        onClick={handleEntryDeletion}
                         type="submit"
-                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-white rounded-full font-sans font-semibold text-xs px-2 py-0.5">
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-700 text-white rounded-full font-sans font-semibold text-xs px-2 py-1 cursor-pointer">
                         <Trash size={13} className="" />
                         <span>Delete</span>
                     </button>
@@ -71,17 +74,18 @@ export default function DelCompanyForm({ id }) {
                 {deleting === true && (
                     <button
                         type="button"
-                        className="btn-xs flex justify-start items-center gap-1 bg-red-100 text-red-700 rounded-full font-sans font-semibold text-xs px-2 py-0.5 opacity-80 btn-disabled">
+                        className="btn-xs flex justify-start items-center gap-1 bg-red-100 text-red-700 rounded-full font-sans font-semibold text-xs px-2 py-1 opacity-80 btn-disabled">
                         <span className="loading loading-spinner loading-xs text-red-green"></span>
                         <span>Deleting...</span>
                     </button>
                 )}
-
             </form>
+
+
             <ToastAlert
                 stateVar={deleted}
                 textColor=" text-red-500"
-                text="Company deleted"
+                text="Brand deleted"
                 onClick={() => setdeleted(false)}
                 iconHint="success"
             />

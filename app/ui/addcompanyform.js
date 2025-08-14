@@ -1,9 +1,21 @@
+"use client"
+
 import { Building, Save, Earth, X } from "lucide-react";
 import { countries } from "../lib/data";
 import { useState } from "react";
 import ToastAlert from "./toast";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+
 
 export default function AddCompanyForm() {
+    const { data: session, status, update } = useSession({ required: "true" });
+
+    useEffect(() => {
+        update(); // force refetch from /api/auth/session
+    }, []);
+
+
     const [adding, setadding] = useState(false)
     const [companyadded, setcompanyadded] = useState(false)
     const [internalerror, setinternalerror] = useState(false);
@@ -65,22 +77,23 @@ export default function AddCompanyForm() {
             <form onSubmit={handleFormSubmit} >
                 <div className="flex flex-wrap justify-start items-center gap-4 mb-4">
                     <div className="grow">
-                        <div className="label">
+                        {/* <div className="label">
                             <span className="label-text font-normal text-black">
                                 <Earth size={15} className="text-cyan-700" />
                             </span>
-                        </div>
+                        </div> */}
                         <select name="country" className="select select-sm w-full rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required>
-                            {countries.slice(1).map((item) => (
+                            <option className="text-xs" value={session.user.country}>{session.user.country}</option>
+                            {/* {countries.slice(1).map((item) => (
                                 <option key={item.id} className="text-sm" value={item.country}>{item.country}</option>
-                            ))}
+                            ))} */}
                         </select>
                     </div>
 
                     <div className="grow">
-                        <div className="label">
+                        {/* <div className="label">
                             <span className="label-text font-normal text-black">Company</span>
-                        </div>
+                        </div> */}
                         <label className="input input-sm flex w-full md:max-w-2xl items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
                             <Building size={15} className="text-cyan-900" />
                             <input name="company" type="text" className="grow font-semibold text-black" placeholder="Company name" required />

@@ -47,7 +47,7 @@ export default function UserProgressDashboard() {
                         <div className="mt-4">
                             {getUserCaptures(user._id).map(capture => (
                                 <div key={capture._id} className="text-sm mb-1">
-                                    <span className=" font-bold">{capture.station?.name || 'Unknown Station'}:</span> {capture.completedDays.length} days captured — <span className={`font-black ${getCompletionRate(capture.completedDays) === "100%" ? "text-green-800" : "text-amber-700" }`}>{getCompletionRate(capture.completedDays)}</span>
+                                    <span className=" font-bold">{capture.station?.name || 'Unknown Station'}:</span> {capture.completedDays.length} day(s) captured — <span className={`font-black ${getCompletionRate(capture.completedDays) === "100%" ? "text-green-800" : "text-amber-700" }`}>{getCompletionRate(capture.completedDays)}</span>
                                 </div>
                             ))}
 

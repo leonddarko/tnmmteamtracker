@@ -6,9 +6,19 @@ import { useState } from "react"
 import _ from "lodash"
 import ToastAlert from "./toast"
 import { access } from "../lib/data"
+import { useEffect } from "react"
+import { useSession } from "next-auth/react"
 
 
 export default function AddUserForm({ Stations }) {
+    const { data: session, status, update } = useSession({ required: "true" });
+
+    useEffect(() => {
+        update(); // force refetch from /api/auth/session
+    }, []);
+
+    const filteredStations = Stations.filter(data => data.country === session.user.country)
+
     const [creating, setcreating] = useState(false);
     const [passwordmismatch, setpasswordmismatch] = useState("invisible");
     const [usercreated, setusercreated] = useState(false);
@@ -119,7 +129,7 @@ export default function AddUserForm({ Stations }) {
                     defaultValue={[]}>
                     <option className="text-xs" value="" disabled>Select Station(s)</option>
                     {/* <option className="text-sm font-medium" value={0}>N/A</option> */}
-                    {Stations.map((item) => (
+                    {filteredStations.map((item) => (
                         <option key={item._id} className="text-sm font-semibold" value={item._id}>
                             {item.name} {item.name === "N/A" ? "" : "| " + item.type }
                         </option>

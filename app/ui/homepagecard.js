@@ -76,7 +76,7 @@ export default function HomepageCard() {
                             <Link href="/dashboard">
                                 <button
                                     type="button"
-                                    className="btn-sm bg-zinc-700 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm flex items-center gap-2 hover:-rotate-3 transition-all cursor-pointer">
+                                    className="btn-sm bg-cyan-950 rounded-full px-5 py-1.5 text-white font-sans font-bold text-xs md:text-sm flex items-center gap-2 hover:-rotate-3 transition-all cursor-pointer">
                                     <Layout size={15} className=" text-zinc-50" /> &nbsp; Dashboard
                                 </button>
                             </Link>

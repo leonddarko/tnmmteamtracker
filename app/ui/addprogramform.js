@@ -1,35 +1,35 @@
 "use client"
 
-import { Save } from "lucide-react";
-import { useState } from "react";
-import ToastAlert from "./toast";
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { Save } from "lucide-react"
+import { useState } from "react"
+import { useEffect } from "react"
+import { useSession } from "next-auth/react"
+import ToastAlert from "./toast"
 
-export default function AddBrandForm({ Companies }) {
+export default function AddProgramForm({ Stations }) {
     const { data: session, update } = useSession({ required: "true" });
 
     useEffect(() => {
         update(); // force refetch from /api/auth/session
     }, []);
 
-    const filteredCompanies = Companies.filter(data => data.country === session.user.country)
-
+    const filteredStations = Stations.filter(data => data.country === session.user.country)
 
     const [adding, setadding] = useState(false)
-    const [brandadded, setbrandadded] = useState(false)
+    const [programadded, setprogramadded] = useState(false)
     const [internalerror, setinternalerror] = useState(false);
+
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         setadding(true)
 
-        const companyId = event.target.companyId.value;
-        const brand = event.target.brand.value;
+        const stationId = event.target.stationId.value;
+        const program = event.target.program.value;
 
         const data = {
-            companyId,
-            brand,
+            stationId,
+            program,
         }
 
         // console.log(data);
@@ -38,7 +38,7 @@ export default function AddBrandForm({ Companies }) {
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/savebrand";
+        const endpoint = "/api/saveprogram";
 
         // Form the request for sending data to the server.
         const options = {
@@ -60,7 +60,7 @@ export default function AddBrandForm({ Companies }) {
         console.log(result);
 
         if (result.okay) {
-            setbrandadded(true);
+            setprogramadded(true);
             setadding(false);
             event.target.reset();
             setTimeout(() => {
@@ -70,24 +70,24 @@ export default function AddBrandForm({ Companies }) {
             setinternalerror(true)
             setadding(false);
         }
+
     }
 
     return (
         <>
             <form onSubmit={handleFormSubmit}>
                 <div className="mb-4">
-                    <select name="companyId" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                        <option className="text-xs" value="" disabled>Select Company</option>
-                        {filteredCompanies.map((item) => (
-                            <option key={item._id} className="text-sm" value={item._id}>{item.company}</option>
+                    <select name="stationId" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                        <option className="text-xs" value="" disabled>Select Station</option>
+                        {filteredStations.map((item) => (
+                            <option key={item._id} className="text-sm" value={item._id}>{item.name}</option>
                         ))}
                     </select>
                 </div>
 
                 <div className="grow mb-4">
                     <label className="input input-sm flex w-full md:max-w-2xl items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
-                        {/* <Factory size={15} className="text-red-700" /> */}
-                        <input name="brand" type="text" className="grow font-semibold text-black" placeholder="Brand name" required />
+                        <input name="program" type="text" className="grow font-semibold text-black" placeholder="Program name" required />
                     </label>
                 </div>
 
@@ -116,10 +116,10 @@ export default function AddBrandForm({ Companies }) {
             </form>
 
             <ToastAlert
-                stateVar={brandadded}
+                stateVar={programadded}
                 textColor="text-cyan-950"
-                text="Brand added."
-                onClick={() => setbrandadded(false)}
+                text="Program added."
+                onClick={() => setprogramadded(false)}
                 iconHint="success"
             />
 
@@ -132,5 +132,4 @@ export default function AddBrandForm({ Companies }) {
             />
         </>
     )
-
 }

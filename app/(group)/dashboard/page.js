@@ -9,21 +9,25 @@ import DataEntryModal from "@/app/ui/dataentrymodal";
 import getAllCategories from "@/app/lib/getCategories";
 import getAllIndustries from "@/app/lib/getIndustries";
 import getCompanies from "@/app/lib/getCompanies";
+import getUserEntries from "@/app/lib/getUserEntries";
+import UserEntriesTable from "@/app/ui/userentriestable";
 
 export default async function Dashboard() {
     const session = await getServerSession()
     console.log(session);
-    
+
     const userID = await getUserID(session?.user.email);
 
     const industries = await getAllIndustries();
     const categories = await getAllCategories();
     const companies = await getCompanies();
+    const userentries = await getUserEntries();
 
     // Convert data to a plain object
     const Industries = JSON.parse(JSON.stringify(industries));
     const Categories = JSON.parse(JSON.stringify(categories));
     const Companies = JSON.parse(JSON.stringify(companies));
+    const UserEntries = JSON.parse(JSON.stringify(userentries));
 
     return (
         <div className="py-6 md:pt-24 px-4 md:px-10 h-screen rounded-lg bg-white/70 shadow-sm overflow-scroll">
@@ -43,6 +47,7 @@ export default async function Dashboard() {
             </div>
 
             <Suspense fallback={<TableSkeleton />}>
+                <UserEntriesTable UserEntries={UserEntries} />
                 <UserDashboard UserID={userID} />
             </Suspense>
         </div>

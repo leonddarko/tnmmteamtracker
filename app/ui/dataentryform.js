@@ -15,6 +15,8 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
         update(); // force refetch from /api/auth/session
     }, []);
 
+    const filteredCompanies = Companies.filter(data => data.country === session.user.country)
+
 
     const [saving, setsaving] = useState(false);
     const [entrysaved, setentrysaved] = useState(false)
@@ -22,12 +24,16 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
 
     const [stations, setStations] = useState([]);
 
+    const [stationID, setstationID] = useState("");
+    const [stationName, setstationName] = useState("");
+    const [stationPrograms, setstationPrograms] = useState([]);
 
-    const [industryID, setindustryID] = useState("")
+
+    const [industryID, setindustryID] = useState("");
     const [industryName, setIndustryName] = useState('');
     const [industryCategories, setIndustryCategories] = useState([]);
 
-    const [companyID, setcompanyID] = useState("")
+    const [companyID, setcompanyID] = useState("");
     const [companyName, setCompanyName] = useState('');
     const [brands, setBrands] = useState([]);
     const [variants, setVariants] = useState([]);
@@ -38,6 +44,19 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
             setStations(res.data);
         });
     }, [session]);
+
+    // Fetching Programs by passing stationID
+    useEffect(() => {
+        if (!stationID) return;
+
+        const fetchPrograms = async () => {
+            const res = await fetch(`/api/programs?station=${stationID}`);
+            const data = await res.json();
+            setstationPrograms(data.programs || []);
+        };
+
+        fetchPrograms();
+    }, [stationID]);
 
     // Fetching Categories by passing industryID
     useEffect(() => {
@@ -51,7 +70,6 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
 
         fetchCategories();
     }, [industryID]);
-
 
     // Fetching Brands and Variants by passing companyID
     useEffect(() => {
@@ -68,7 +86,7 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
 
     }, [companyID])
 
-
+    // Current Time
     const [currentTime, setCurrentTime] = useState("");
     useEffect(() => {
         const updateTime = () => {
@@ -83,12 +101,19 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
         return () => clearInterval(intervalId);
     }, []);
 
+    // Current/Today's Date
+    const [currentDate, setCurrentDate] = useState("");
+    useEffect(() => {
+        const today = new Date();
+        const formattedDate = today.toISOString().split("T")[0];
+        setCurrentDate(formattedDate);
+    }, []);
 
     const handleFormSubmit = async (event) => {
         event.preventDefault();
         setsaving(true);
 
-        const station = event.target.station.value;
+        const station = stationName;
         const date = event.target.date.value;
         const timestamp = event.target.timestamp.value;
         const title = event.target.title.value;
@@ -108,6 +133,7 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
 
         const country = event.target.country.value;
         const timesubmitted = event.target.timesubmitted.value;
+        const datesubmitted = event.target.datesubmitted.value;
         const user = event.target.user.value;
 
         const data = {
@@ -127,9 +153,9 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
             variant,
             country,
             timesubmitted,
+            datesubmitted,
             user,
         }
-
 
         // console.log(data);
         // setsaving(false);
@@ -163,7 +189,7 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
             setentrysaved(true)
             setsaving(false)
             // event.target.reset();
-            // setTimeout(() => { location.reload(true); }, 1000);
+            setTimeout(() => { location.reload(true); }, 1000);
         } else {
             setinternalerror(true)
             setsaving(false)
@@ -180,10 +206,17 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                     <div>
                         <div className="label flex justify-start items-center gap-1">
                         </div>
-                        <select name="station" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                        <select name="station" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue=""
+                            onChange={(e) => {
+                                const selectedID = e.target.value;
+                                setstationID(selectedID);
+                                const selectedStation = stations.find(item => item._id === selectedID);
+                                setstationName(selectedStation?.name || '');
+                            }}
+                        >
                             <option className="text-xs" value="" disabled>Select Station</option>
                             {stations.map((station) => (
-                                <option key={station._id} className="text-sm" value={station.name}>{station.name}</option>
+                                <option key={station._id} className="text-sm" value={station._id}>{station.name}</option>
                             ))}
                         </select>
                     </div>
@@ -253,8 +286,16 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                     <div>
                         <select name="program" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
                             <option className="text-xs" value="" disabled>Select program</option>
-                            <option className="text-sm" value="The Sharks">The Sharks</option>
-                            <option className="text-sm" value="News 360">News 360</option>
+                            {stationPrograms.map((program, idx) => (
+                                <option key={idx} value={program}>
+                                    {program}
+                                </option>
+                            ))}
+                            {stationPrograms.length === 0 && (
+                                <option className="text-xs" value="N/A">
+                                    No Programs Available
+                                </option>
+                            )}
                         </select>
                     </div>
 
@@ -269,10 +310,10 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
 
                 <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
                     {/* Industry */}
-                    <div>
+                    <div className="">
                         <select
                             name="industry"
-                            className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold"
+                            className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold max-w-xs"
                             required
                             defaultValue=""
                             onChange={(e) => {
@@ -282,7 +323,7 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                                 setIndustryName(selectedIndustry?.industry || '');
                             }}
                         >
-                            <option className="text-xs" value="" disabled>Select Industry </option>
+                            <option className="text-xs" value="" disabled>Select Industry</option>
                             {Industries.map((item) => (
                                 <option key={item._id} className="text-sm" value={item._id}>{item.industry}</option>
                             ))}
@@ -313,12 +354,12 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                             onChange={(e) => {
                                 const selectedID = e.target.value;
                                 setcompanyID(selectedID);
-                                const selectedCompany = Companies.find(item => item._id === selectedID);
+                                const selectedCompany = filteredCompanies.find(item => item._id === selectedID);
                                 setCompanyName(selectedCompany?.company || '')
                             }}
                         >
                             <option className="text-xs" value="" disabled>Select Company </option>
-                            {Companies.map((item) => (
+                            {filteredCompanies.map((item) => (
                                 <option key={item._id} className="text-sm" value={item._id}>
                                     {item.company} | {item.country === "Ghana" && "GH" || item.country === "Nigeria" && "NG" || item.country === "Côte d'Ivoire" && "CI"}
                                 </option>
@@ -337,6 +378,11 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                                     {brand}
                                 </option>
                             ))}
+                            {brands.length === 0 && (
+                                <option className="text-xs" value="N/A">
+                                    No Brands Available
+                                </option>
+                            )}
                         </select>
                     </div>
 
@@ -351,11 +397,18 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                                     {vari}
                                 </option>
                             ))}
+                            {variants.length === 0 && (
+                                <option className="text-xs" value="N/A">
+                                    No Variants Available
+                                </option>
+                            )}
                         </select>
                     </div>
                 </div>
 
                 <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
+                    
+                    {/* Country */}
                     <div className="flex justify-start items-center gap-2">
                         {session && (
                             <>
@@ -395,13 +448,24 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                         </select>
                     </div>
 
-                    {/* Time Submitted */}
+                    {/* Time Submitted (Hidden) */} 
                     <input
                         name="timesubmitted"
                         type="time"
-                        className="py-0.5 px-1 rounded-md focus:outline-none text-sm bg-zinc-50 text-zinc-500"
+                        className="py-0.5 px-1 rounded-md focus:outline-none text-sm bg-zinc-50 text-zinc-500 hidden"
                         step={1}
                         value={currentTime}
+                        disabled
+                        required
+                    />
+
+                    {/* Date Submitted (Hidden) */}
+                    <input
+                        name="datesubmitted"
+                        type="date"
+                        className="py-1 px-2 text-sm font-semibold rounded-md focus:outline-none bg-cyan-950 text-white hidden"
+                        value={currentDate}
+                        // onChange={(e) => setCurrentDate(e.target.value)}
                         disabled
                         required
                     />

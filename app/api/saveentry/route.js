@@ -2,7 +2,7 @@ import dbConnect from "@/app/lib/models/db";
 import Entry from "@/app/lib/models/Entry";
 
 export async function POST(request) {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    // await new Promise((resolve) => setTimeout(resolve, 1000));
 
     try {
         const {
@@ -22,6 +22,7 @@ export async function POST(request) {
             variant,
             country,
             timesubmitted,
+            datesubmitted,
             user,
         } = await request.json();
 
@@ -47,6 +48,7 @@ export async function POST(request) {
             variant,
             country,
             timesubmitted,
+            datesubmitted,
             user,
         })
 
