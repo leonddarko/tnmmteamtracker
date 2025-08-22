@@ -1,14 +1,18 @@
 import mongoose from 'mongoose';
 
 const BrandSchema = new mongoose.Schema({
-    company: {
+    variant: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Company',
+        ref: 'Variant',
         required: true,
     },
-    brands: {
-        type: [String],
-        default: [],
+    brand: {
+        type: String,
+        required: true,
+    },
+    country: {
+        type: String,
+        required: true,
     },
 });
 

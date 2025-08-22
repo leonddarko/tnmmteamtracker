@@ -1,20 +1,22 @@
 "use client"
 
 import { Building, Save, Earth, X } from "lucide-react";
-import { countries } from "../lib/data";
 import { useState } from "react";
 import ToastAlert from "./toast";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import Image from "next/image";
 
 
-export default function AddCompanyForm() {
+
+export default function AddCompanyForm({ Variants }) {
     const { data: session, status, update } = useSession({ required: "true" });
 
     useEffect(() => {
         update(); // force refetch from /api/auth/session
     }, []);
 
+    const filteredVariants = Variants.filter(data => data.country === session.user.country)
 
     const [adding, setadding] = useState(false)
     const [companyadded, setcompanyadded] = useState(false)
@@ -24,12 +26,14 @@ export default function AddCompanyForm() {
         event.preventDefault();
         setadding(true)
 
-        const country = event.target.country.value;
+        const variantId = event.target.variantId.value;
         const company = event.target.company.value;
+        const country = event.target.country.value;
 
         const data = {
-            country,
+            variantId,
             company,
+            country,
         }
 
         // console.log(data);
@@ -75,31 +79,66 @@ export default function AddCompanyForm() {
     return (
         <>
             <form onSubmit={handleFormSubmit} >
-                <div className="flex flex-wrap justify-start items-center gap-4 mb-4">
-                    <div className="grow">
-                        {/* <div className="label">
+                <div className="mb-4">
+                    {/* <div className="label">
                             <span className="label-text font-normal text-black">
                                 <Earth size={15} className="text-cyan-700" />
                             </span>
                         </div> */}
-                        <select name="country" className="select select-sm w-full rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required>
-                            <option className="text-xs" value={session.user.country}>{session.user.country}</option>
-                            {/* {countries.slice(1).map((item) => (
-                                <option key={item.id} className="text-sm" value={item.country}>{item.country}</option>
-                            ))} */}
-                        </select>
-                    </div>
+                    <select name="variantId" className="select select-sm w-full rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                        <option className="text-xs" value="">Select Variant</option>
+                        {filteredVariants.reverse().map((item) => (
+                            <option key={item._id} className="text-sm" value={item._id}>{item.variant}</option>
+                        ))}
+                    </select>
+                </div>
 
-                    <div className="grow">
-                        {/* <div className="label">
+                <div className="mb-4">
+                    {/* <div className="label">
                             <span className="label-text font-normal text-black">Company</span>
                         </div> */}
-                        <label className="input input-sm flex w-full md:max-w-2xl items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
-                            <Building size={15} className="text-cyan-900" />
-                            <input name="company" type="text" className="grow font-semibold text-black" placeholder="Company name" required />
-                        </label>
-                    </div>
+                    <label className="input input-sm flex w-full md:max-w-2xl items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
+                        <Building size={15} className="text-cyan-900" />
+                        <input name="company" type="text" className="grow font-semibold text-black" placeholder="Company name" required />
+                    </label>
                 </div>
+
+                {/* Country */}
+                <div className="flex justify-start items-center gap-2 mb-4">
+                    <select
+                        name="country"
+                        className="select select-sm w-full rounded-full shadow-sm bg-zinc-100 text-black font-semibold"
+                        required defaultValue=""
+                    >
+                        <option className="text-xs" value={session.user.country}>{session.user.country}</option>
+                    </select>
+                    {session && (
+                        <>
+                            <Image
+                                className={`${session.user.country !== "Ghana" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/gh.png"
+                                width={20}
+                                height={20}
+                                alt="Ghana"
+                            />
+                            <Image
+                                className={`${session.user.country !== "Nigeria" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/ng.png"
+                                width={20}
+                                height={20}
+                                alt="Nigeria"
+                            />
+                            <Image
+                                className={`${session.user.country !== "Côte d'Ivoire" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/ci.png"
+                                width={20}
+                                height={20}
+                                alt="Côte d'Ivoire"
+                            />
+                        </>
+                    )}
+                </div>
+
                 <div className="flex justify-between items-center gap-3">
                     <kbd className="kbd kbd-xs bg-zinc-100 text-black">esc</kbd>
                     <div className="flex justify-end items-center gap-3">

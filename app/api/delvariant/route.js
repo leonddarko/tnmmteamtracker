@@ -11,10 +11,10 @@ export async function POST(request) {
         console.log("Connected.");
 
         console.log("Finding and deleting entire Variant List document");
-        const delvariantdoc = await Variant.findByIdAndDelete(req.id)
+        const delvariant = await Variant.findByIdAndDelete(req.id)
 
-        console.log(delvariantdoc);
-        return Response.json({ okay: "Variant list deleted" }, { status: 200 });
+        console.log(delvariant);
+        return Response.json({ okay: "Variant deleted" }, { status: 200 });
 
     } catch (error) {
         console.error('An error occured', error);

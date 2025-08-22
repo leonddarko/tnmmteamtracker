@@ -1,12 +1,19 @@
 import { Schema, model, models } from "mongoose";
 
 const companySchema = new Schema({
+    variant: {
+        type: Schema.Types.ObjectId,
+        ref: 'Variant',
+        required: true,
+    },
     company: {
         type: String,
         required: true,
-        unique: true,
-        trim: true,
     },
+    // companies: {
+    //     type: [String],
+    //     default: [],
+    // },
     country: {
         type: String,
         required: true,

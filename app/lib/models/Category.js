@@ -1,15 +1,19 @@
-// models/Category.js
 import mongoose from 'mongoose';
 
 const CategorySchema = new mongoose.Schema({
-  industry: {
+  variant: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Industry',
+    ref: 'Variant',
     required: true,
   },
-  categories: {
-    type: [String],
-    default: [],
+  category: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  country: {
+    type: String,
+    required: true,
   },
 });
 

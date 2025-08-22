@@ -3,7 +3,7 @@
 import { Plus, X } from "lucide-react";
 import AddCategoryForm from "./addcategoryform";
 
-export default function AddCategoryModal({ Industries }) {
+export default function AddCategoryModal({ Variants }) {
     return (<>
         <button
             onClick={() => document.getElementById('category_modal').showModal()}
@@ -25,7 +25,7 @@ export default function AddCategoryModal({ Industries }) {
                     <h1 className="text-xl text-cyan-950 font-notosans font-bold leading-none">Add New Category</h1>
                     <span className="label-text text-xs text-zinc-800">Enter your new category name and save.</span>
                 </div>
-                <AddCategoryForm Industries={Industries} />
+                <AddCategoryForm Variants={Variants} />
             </div>
         </dialog>
     </>)

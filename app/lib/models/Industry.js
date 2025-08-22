@@ -1,11 +1,19 @@
 import mongoose from 'mongoose';
 
 const IndustrySchema = new mongoose.Schema({
+  variant: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Variant',
+    required: true,
+  },
   industry: {
     type: String,
     required: true,
-    unique: true,
     trim: true,
+  },
+  country: {
+    type: String,
+    required: true,
   },
 });
 

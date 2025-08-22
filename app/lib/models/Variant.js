@@ -2,14 +2,15 @@ import mongoose from 'mongoose';
 
 
 const VariantSchema = new mongoose.Schema({
-    company: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Company',
+    variant: {
+        type: String,
         required: true,
+        unique: true,
+        // trim: true,
     },
-    variants: {
-        type: [String],
-        default: [],
+    country: {
+        type: String,
+        required: true,
     },
 });
 

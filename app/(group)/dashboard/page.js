@@ -11,6 +11,7 @@ import getAllIndustries from "@/app/lib/getIndustries";
 import getCompanies from "@/app/lib/getCompanies";
 import getUserEntries from "@/app/lib/getUserEntries";
 import UserEntriesTable from "@/app/ui/userentriestable";
+import getAllVariants from "@/app/lib/getVariants";
 
 export default async function Dashboard() {
     const session = await getServerSession()
@@ -18,12 +19,14 @@ export default async function Dashboard() {
 
     const userID = await getUserID(session?.user.email);
 
+    const variants = await getAllVariants();
     const industries = await getAllIndustries();
     const categories = await getAllCategories();
     const companies = await getCompanies();
     const userentries = await getUserEntries();
 
     // Convert data to a plain object
+    const Variants = JSON.parse(JSON.stringify(variants));
     const Industries = JSON.parse(JSON.stringify(industries));
     const Categories = JSON.parse(JSON.stringify(categories));
     const Companies = JSON.parse(JSON.stringify(companies));
@@ -41,9 +44,9 @@ export default async function Dashboard() {
                         </button>
                     </Link>
                     <h1 className=" text-3xl text-cyan-950 font-notosans font-bold leading-none">{session?.user.name}</h1>
-                    {/* <p className="label-text text-cyan-950">Detailed instructions for this page to be provided later.</p> */}
+                    <p className="label-text text-cyan-950 text-sm">View all your enteries and check off day you're done with for the month.</p>
                 </div>
-                <DataEntryModal User={session?.user.name} UserID={userID} Industries={Industries} Companies={Companies} />
+                <DataEntryModal User={session?.user.name} UserID={userID} Variants={Variants} Industries={Industries} Companies={Companies} />
             </div>
 
             <Suspense fallback={<TableSkeleton />}>

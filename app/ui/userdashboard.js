@@ -70,17 +70,21 @@ export default function UserDashboard({ UserID }) {
 
     return (
         <main className="pb-6 text-cyan-900">
-                <>
-                    <div className="mb-6">
-                        <input
-                            type="month"
-                            value={month}
-                            onChange={(e) => setMonth(e.target.value)}
-                            className="py-0.5 px-2 text-sm font-bold rounded-lg focus:outline-none shadow-sm bg-cyan-700 text-white"
+            <>
+                {stations.map(station => (
+                    station.name !== "N/A" && (
+                        <div className="mb-6">
+                            <input
+                                type="month"
+                                value={month}
+                                onChange={(e) => setMonth(e.target.value)}
+                                className="py-0.5 px-2 text-sm font-bold rounded-lg focus:outline-none shadow-sm bg-cyan-700 text-white"
+                            />
+                        </div>
+                    )
 
-                        />
-                    </div>
-                </>
+                ))}
+            </>
 
             {stations.map(station => (
                 <>

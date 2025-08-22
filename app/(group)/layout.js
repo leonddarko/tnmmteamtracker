@@ -2,7 +2,6 @@ import Script from "next/script";
 import DashboardFooter from "../ui/dashboardfooter";
 import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-
 import SideNavigation from "../ui/sidenav";
 import userAccess from "../lib/getUserAccess";
 

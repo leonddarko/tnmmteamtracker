@@ -3,7 +3,7 @@
 import { Plus, X } from "lucide-react";
 import AddBrandForm from "./addbrandform";
 
-export default function AddBrandModal({ Companies }) {
+export default function AddBrandModal({ Variants }) {
     return (
     <>
         <button
@@ -23,10 +23,10 @@ export default function AddBrandModal({ Companies }) {
                     </button>
                 </form>
                 <div className="mb-5">
-                    <h1 className="text-xl text-cyan-950 font-notosans font-bold leading-none">Add New Brand</h1>
+                    <h1 className="text-xl text-cyan-950 font-notosans font-bold leading-none">Add Brand Generic</h1>
                     <span className="label-text text-xs text-zinc-800">Select a Company, enter a Brand and save.</span>
                 </div>
-                <AddBrandForm Companies={Companies} />
+                <AddBrandForm Variants={Variants} />
             </div>
         </dialog>
     </>

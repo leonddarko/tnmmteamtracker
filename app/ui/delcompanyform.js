@@ -4,7 +4,7 @@ import { Trash } from "lucide-react";
 import ToastAlert from "./toast";
 import { useState } from "react";
 
-export default function DelCompanyForm({ id }) {
+export default function DelCompanyForm({ id, company }) {
     const [deleting, setdeleting] = useState(false);
     const [deleted, setdeleted] = useState(false);
     const [internalerror, setinternalerror] = useState(false);
@@ -14,14 +14,15 @@ export default function DelCompanyForm({ id }) {
         setdeleting(true)
 
         const data = {
-            id
+            id,
+            company,
         }
 
         // Send the data to the server in JSON format.
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/deletecompany";
+        const endpoint = "/api/delcompany";
 
         // Form the request for sending data to the server.
         const options = {

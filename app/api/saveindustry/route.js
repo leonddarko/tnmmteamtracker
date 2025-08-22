@@ -6,7 +6,7 @@ export async function POST(request) {
 
     try {
         const req = await request.json();
-        const { industry } = req;
+        const { industry, variantId, country } = req;
         console.log(req);
 
         console.log("Connecting to database...");
@@ -15,7 +15,9 @@ export async function POST(request) {
 
         console.log("Creating document...");
         const newindustry = await Industry({
+            variant: variantId,
             industry,
+            country
         }).save()
         console.log(newindustry);
 

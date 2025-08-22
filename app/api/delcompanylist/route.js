@@ -13,7 +13,7 @@ export async function POST(request) {
         console.log("Connected.");
 
         console.log("Deleting  document...");
-        const delcompany = await Company.findByIdAndDelete ({ _id: req.id })
+        const delcompany = await Company.findByIdAndDelete({ _id: req.id })
         console.log(delcompany);
         
         return Response.json({ okay: "Success" }, { status: 200 });

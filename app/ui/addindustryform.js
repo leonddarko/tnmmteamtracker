@@ -1,9 +1,22 @@
+"use client"
+
 import { Factory, Save } from "lucide-react";
 import { useState } from "react";
 import ToastAlert from "./toast";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
+import Image from "next/image";
+
+export default function AddIndustryForm({ Variants }) {
+    const { data: session, status, update } = useSession({ required: "true" });
+
+    useEffect(() => {
+        update(); // force refetch from /api/auth/session
+    }, []);
+
+    const filteredVariants = Variants.filter(data => data.country === session.user.country)
 
 
-export default function AddIndustryForm() {
     const [adding, setadding] = useState(false)
     const [industryadded, setindustryadded] = useState(false)
     const [internalerror, setinternalerror] = useState(false);
@@ -12,10 +25,14 @@ export default function AddIndustryForm() {
         event.preventDefault();
         setadding(true)
 
+        const variantId = event.target.variantId.value;
         const industry = event.target.industry.value;
+        const country = event.target.country.value;
 
         const data = {
+            variantId,
             industry,
+            country
         }
 
         // console.log(data);
@@ -62,11 +79,55 @@ export default function AddIndustryForm() {
     return (
         <>
             <form onSubmit={handleFormSubmit}>
+                <div className="mb-4">
+                    <select name="variantId" className="select select-sm w-full rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                        <option className="text-xs" value="">Select Variant</option>
+                        {filteredVariants.reverse().map((item) => (
+                            <option key={item._id} className="text-sm" value={item._id}>{item.variant}</option>
+                        ))}
+                    </select>
+                </div>
                 <div className="grow mb-4">
                     <label className="input input-sm flex w-full md:max-w-2xl items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
                         <Factory size={15} className="text-cyan-700" />
                         <input name="industry" type="text" className="grow font-semibold text-black" placeholder="Industry name" required />
                     </label>
+                </div>
+
+                {/* Country */}
+                <div className="flex justify-start items-center gap-2 mb-4">
+                    <select
+                        name="country"
+                        className="select select-sm w-full rounded-full shadow-sm bg-zinc-100 text-black font-semibold hidden"
+                        required defaultValue=""
+                    >
+                        <option className="text-xs" value={session.user.country}>{session.user.country}</option>
+                    </select>
+                    {session && (
+                        <>
+                            <Image
+                                className={`${session.user.country !== "Ghana" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/gh.png"
+                                width={20}
+                                height={20}
+                                alt="Ghana"
+                            />
+                            <Image
+                                className={`${session.user.country !== "Nigeria" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/ng.png"
+                                width={20}
+                                height={20}
+                                alt="Nigeria"
+                            />
+                            <Image
+                                className={`${session.user.country !== "Côte d'Ivoire" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/ci.png"
+                                width={20}
+                                height={20}
+                                alt="Côte d'Ivoire"
+                            />
+                        </>
+                    )}
                 </div>
 
                 <div className="flex justify-between items-center gap-3">

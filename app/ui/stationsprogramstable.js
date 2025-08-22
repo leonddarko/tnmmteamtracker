@@ -1,11 +1,26 @@
+"use client"
+
 import DelProgramForm from "./delprogramform";
 import DelProgramListForm from "./delprogramlistform";
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 
 export default function StationsProgramsTable({ Stations, Programs }) {
+    const { data: session, status, update } = useSession({ required: "true" });
+
+    useEffect(() => {
+        update(); // force refetch from /api/auth/session
+    }, []);
+
+    // const filteredStations = Stations.filter(data => data.country === session.user.country)
+
     const stationMap = new Map(
         Stations.map((sta) => [sta._id, sta.name])
     );
+
+    // const filteredProgram = Programs.filter(data => data.station === session.user.country)
+
 
     return (
         <>

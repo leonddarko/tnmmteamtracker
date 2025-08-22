@@ -13,11 +13,11 @@ export default function StationsTable({ Stations }) {
         update(); // force refetch from /api/auth/session
     }, []);
 
-    const filteredStations = Stations.filter(data => data.country === session.user.country)
+    // const filteredStations = Stations.filter(data => data.country === session.user.country)
 
     return (<>
         <div className="overflow-scroll max-w-lg md:overflow-auto max-h-80 shadow-sm shadow-gray-300 rounded-xl md:flex-grow">
-            {filteredStations.length > 0 && (
+            {Stations.length > 0 && (
                 <table className="table table-xs table-pin-rows bg-zinc-100">
                     <tbody>
                         <tr className="text-cyan-950/50">
@@ -28,7 +28,7 @@ export default function StationsTable({ Stations }) {
                         </tr>
                     </tbody>
                     <tbody>
-                        {filteredStations.map((item) => (
+                        {Stations.map((item) => (
                             <tr key={item._id} className="text-black hover:bg-zinc-100">
                                 <td className="font-normal">
                                     {item.country}

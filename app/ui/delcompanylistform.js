@@ -4,7 +4,7 @@ import { Trash2 } from "lucide-react";
 import { useState } from "react";
 import ToastAlert from "./toast";
 
-export default function DelVariantListForm({ id }) {
+export default function DelCompanyListForm({ id }) {
     const [deleting, setdeleting] = useState(false);
     const [deleted, setdeleted] = useState(false);
     const [internalerror, setinternalerror] = useState(false);
@@ -21,7 +21,7 @@ export default function DelVariantListForm({ id }) {
         const JSONdata = JSON.stringify(data);
 
         // API endpoint where we send form data.
-        const endpoint = "/api/delvariantlist";
+        const endpoint = "/api/delcompanylist";
 
         // Form the request for sending data to the server.
         const options = {
@@ -79,7 +79,7 @@ export default function DelVariantListForm({ id }) {
             <ToastAlert
                 stateVar={deleted}
                 textColor=" text-red-500"
-                text="Variant list deleted"
+                text="Company list deleted"
                 onClick={() => setdeleted(false)}
                 iconHint="success"
             />

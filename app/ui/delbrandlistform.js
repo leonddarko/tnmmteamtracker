@@ -79,7 +79,7 @@ export default function DelBrandListForm({ id }) {
             <ToastAlert
                 stateVar={deleted}
                 textColor=" text-red-500"
-                text="Brand list deleted"
+                text="Brand deleted"
                 onClick={() => setdeleted(false)}
                 iconHint="success"
             />

@@ -4,16 +4,14 @@ import { useState } from "react";
 import ToastAlert from "./toast";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
+import Image from "next/image";
 
-export default function AddBrandVariantForm({ Companies }) {
+export default function AddBrandVariantForm() {
     const { data: session, status, update } = useSession({ required: "true" });
 
     useEffect(() => {
         update(); // force refetch from /api/auth/session
     }, []);
-
-    const filteredCompanies = Companies.filter(data => data.country === session.user.country)
-
 
     const [adding, setadding] = useState(false)
     const [variantadded, setvariantadded] = useState(false)
@@ -23,12 +21,12 @@ export default function AddBrandVariantForm({ Companies }) {
         event.preventDefault();
         setadding(true)
 
-        const companyId = event.target.companyId.value;
         const variant = event.target.variant.value;
+        const country = event.target.country.value;
 
         const data = {
-            companyId,
             variant,
+            country,
         }
 
         // console.log(data);
@@ -75,20 +73,46 @@ export default function AddBrandVariantForm({ Companies }) {
     return (
         <>
             <form onSubmit={handleFormSubmit}>
-                <div className="mb-4">
-                    <select name="companyId" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                        <option className="text-xs" value="" disabled>Select Company</option>
-                        {filteredCompanies.map((item) => (
-                            <option key={item._id} className="text-sm" value={item._id}>{item.company}</option>
-                        ))}
-                    </select>
-                </div>
-
                 <div className="grow mb-4">
                     <label className="input input-sm flex w-full md:max-w-2xl items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
                         {/* <Factory size={15} className="text-red-700" /> */}
                         <input name="variant" type="text" className="grow font-semibold text-black" placeholder="Variant name" required />
                     </label>
+                </div>
+
+                <div className="flex justify-start items-center gap-2 mb-4">
+                    <select
+                        name="country"
+                        className="select select-sm w-full rounded-full shadow-sm bg-zinc-100 text-black font-semibold"
+                        required defaultValue=""
+                    >
+                        <option className="text-xs" value={session.user.country}>{session.user.country}</option>
+                    </select>
+                    {session && (
+                        <>
+                            <Image
+                                className={`${session.user.country !== "Ghana" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/gh.png"
+                                width={20}
+                                height={20}
+                                alt="Ghana"
+                            />
+                            <Image
+                                className={`${session.user.country !== "Nigeria" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/ng.png"
+                                width={20}
+                                height={20}
+                                alt="Nigeria"
+                            />
+                            <Image
+                                className={`${session.user.country !== "Côte d'Ivoire" && "hidden"} rounded-sm`}
+                                src="https://flagcdn.com/w40/ci.png"
+                                width={20}
+                                height={20}
+                                alt="Côte d'Ivoire"
+                            />
+                        </>
+                    )}
                 </div>
 
                 <div className="flex justify-between items-center gap-3">
@@ -106,7 +130,7 @@ export default function AddBrandVariantForm({ Companies }) {
                         {adding === true && (
                             <button
                                 type="button"
-                                className="flex justify-start items-center gap-2 btn-sm bg-cyan-800 rounded-full px-2 py-1.5 text-white font-sans font-bold text-xs opacity-80 btn-disabled">
+                                className="flex justify-start items-center gap-2 btn-sm bg-cyan-800 rounded-full px-3 py-1 text-white font-sans font-bold text-xs opacity-80 btn-disabled">
                                 <span className="loading loading-spinner loading-xs text-red-green"></span>
                                 <span>Adding...</span>
                             </button>

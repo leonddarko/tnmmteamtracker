@@ -106,7 +106,7 @@ export default function AddProgramForm({ Stations }) {
                         {adding === true && (
                             <button
                                 type="button"
-                                className="flex justify-start items-center gap-2 btn-sm bg-cyan-800 rounded-full px-2 py-1.5 text-white font-sans font-bold text-xs opacity-80 btn-disabled">
+                                className="flex justify-start items-center gap-2 btn-sm bg-cyan-800 rounded-full px-3 py-1 text-white font-sans font-bold text-xs opacity-80 btn-disabled">
                                 <span className="loading loading-spinner loading-xs text-red-green"></span>
                                 <span>Adding...</span>
                             </button>

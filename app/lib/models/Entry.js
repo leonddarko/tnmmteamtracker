@@ -17,7 +17,7 @@ const entrySchema = new Schema({
     variant: String,
     country: String,
     timesubmitted: String,
-    datesubmitted: Date,
+    datesubmitted: String,
     user: String,
 });
 

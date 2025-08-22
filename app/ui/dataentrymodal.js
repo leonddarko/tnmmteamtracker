@@ -4,7 +4,7 @@ import { Plus, X } from "lucide-react";
 import DataEntryForm from "./dataentryform";
 
 
-export default function DataEntryModal({ UserID, User, Industries, Companies }) {
+export default function DataEntryModal({ UserID, User, Variants, Industries, Companies }) {
     return (
         <>
             <button
@@ -29,7 +29,7 @@ export default function DataEntryModal({ UserID, User, Industries, Companies }) 
                         <span className="label-text text-xs text-zinc-800">Fill out the form and Save.</span>
                     </div>
 
-                    <DataEntryForm UserID={UserID} User={User} Industries={Industries} Companies={Companies} />
+                    <DataEntryForm UserID={UserID} User={User} Variants={Variants} Industries={Industries} Companies={Companies} />
                 </div>
             </dialog>
         </>

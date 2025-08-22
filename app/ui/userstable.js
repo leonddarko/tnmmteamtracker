@@ -14,7 +14,11 @@ export default async function UsersTable() {
                         <th>User</th>
                         <th>Email</th>
                         <th>Access</th>
-                        <th>Actions</th>
+                        <th>
+                            <div className="flex justify-end">
+                                Actions
+                            </div>
+                        </th>
                     </tr>
                 </tbody>
                 <tbody>
@@ -30,7 +34,7 @@ export default async function UsersTable() {
                                     {item.access}
                                 </div>
                             </td>
-                            <td className="">
+                            <td className="flex justify-end">
                                 <DelUserForm id={item._id} />
                             </td>
                         </tr>

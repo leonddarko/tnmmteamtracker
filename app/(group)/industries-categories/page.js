@@ -8,6 +8,7 @@ import getAllCategories from "@/app/lib/getCategories";
 import IndustriesTable from "@/app/ui/industriestable";
 import CategoriesTable from "@/app/ui/categoriestable";
 import UnauthorizedAccess from "@/app/ui/unauthorizedaccess";
+import getAllVariants from "@/app/lib/getVariants";
 
 export default async function IndustriesCategories() {
     const session = await getServerSession()
@@ -16,12 +17,13 @@ export default async function IndustriesCategories() {
 
     const industries = await getAllIndustries();
     const categories = await getAllCategories();
+    const variants = await getAllVariants();
+
 
     // Convert data to a plain object
     const Industries = JSON.parse(JSON.stringify(industries));
     const Categories = JSON.parse(JSON.stringify(categories));
-    // console.log(Industries);
-    // console.log(Categories);
+    const Variants = JSON.parse(JSON.stringify(variants));
 
     return (
         <>
@@ -38,14 +40,14 @@ export default async function IndustriesCategories() {
                                     <span className="label-text text-cyan-950">Add<span className=" font-medium text-cyan-950">, View all </span> or <span className="font-medium text-red-900">Delete Industries or Categories </span>here.</span>
                                 </div>
                                 <div className="flex flex-wrap justify-end items-start gap-2">
-                                    <AddIndustryModal />
-                                    <AddCategoryModal Industries={Industries} />
+                                    <AddIndustryModal Variants={Variants} />
+                                    <AddCategoryModal Variants={Variants} />
                                 </div>
                             </div>
                         </div>
                         <div className=" flex justify-between items-start gap-8 flex-wrap">
-                            <IndustriesTable Industries={Industries} />
-                            <CategoriesTable Industries={Industries} Categories={Categories} />
+                            <IndustriesTable Variants={Variants} Industries={Industries} />
+                            <CategoriesTable Variants={Variants} Categories={Categories} />
                         </div>
                     </>
                 )}

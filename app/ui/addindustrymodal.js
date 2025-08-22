@@ -3,7 +3,7 @@
 import { Plus, X } from "lucide-react";
 import AddIndustryForm from "./addindustryform";
 
-export default function AddIndustryModal() {
+export default function AddIndustryModal({ Variants }) {
     return (
         <>
             <button
@@ -26,7 +26,7 @@ export default function AddIndustryModal() {
                         <h1 className="text-xl text-cyan-950 font-notosans font-bold leading-none">Add New Industry</h1>
                         <span className="label-text text-xs text-zinc-800">Enter a new Industry name and save.</span>
                     </div>
-                    <AddIndustryForm />
+                    <AddIndustryForm Variants={Variants} />
                 </div>
             </dialog>
         </>

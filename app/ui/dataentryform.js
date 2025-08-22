@@ -8,14 +8,14 @@ import axios from "axios";
 import ToastAlert from "./toast";
 import Image from "next/image";
 
-export default function DataEntryForm({ UserID, User, Industries, Companies }) {
+export default function DataEntryForm({ UserID, User, Variants, Industries, Companies }) {
     const { data: session, update } = useSession({ required: "true" });
 
     useEffect(() => {
         update(); // force refetch from /api/auth/session
     }, []);
 
-    const filteredCompanies = Companies.filter(data => data.country === session.user.country)
+    const filteredVariants = Variants.filter(data => data.country === session.user.country)
 
 
     const [saving, setsaving] = useState(false);
@@ -28,15 +28,12 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
     const [stationName, setstationName] = useState("");
     const [stationPrograms, setstationPrograms] = useState([]);
 
-
-    const [industryID, setindustryID] = useState("");
-    const [industryName, setIndustryName] = useState('');
-    const [industryCategories, setIndustryCategories] = useState([]);
-
-    const [companyID, setcompanyID] = useState("");
-    const [companyName, setCompanyName] = useState('');
-    const [brands, setBrands] = useState([]);
-    const [variants, setVariants] = useState([]);
+    const [variantID, setvariantID] = useState("");
+    const [variantName, setvariantName] = useState("");
+    const [brandgeneric, setbrandgeneric] = useState("");
+    const [company, setcompany] = useState("");
+    const [industry, setindustry] = useState("");
+    const [category, setcategoroy] = useState("");
 
     useEffect(() => {
         if (!UserID) return;
@@ -58,33 +55,22 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
         fetchPrograms();
     }, [stationID]);
 
-    // Fetching Categories by passing industryID
+    // Fetching Brands and Companies by passing variantID
     useEffect(() => {
-        if (!industryID) return;
+        if (!variantID) return;
 
-        const fetchCategories = async () => {
-            const res = await fetch(`/api/categories?industry=${industryID}`);
+        const fetchBCIC = async () => {
+            const res = await fetch(`/api/brandcompanyindustrycategory?variant=${variantID}`);
             const data = await res.json();
-            setIndustryCategories(data.categories || []);
-        };
-
-        fetchCategories();
-    }, [industryID]);
-
-    // Fetching Brands and Variants by passing companyID
-    useEffect(() => {
-        if (!companyID) return;
-
-        const fetchBrandsVariants = async () => {
-            const res = await fetch(`/api/brandsvariants?company=${companyID}`);
-            const data = await res.json();
-            setBrands(data.brands || []);
-            setVariants(data.variants || []);
+            setbrandgeneric(data.brand || "");
+            setcompany(data.company || "");
+            setindustry(data.industry || "")
+            setcategoroy(data.category || "")
         }
 
-        fetchBrandsVariants();
+        fetchBCIC();
 
-    }, [companyID])
+    }, [variantID])
 
     // Current Time
     const [currentTime, setCurrentTime] = useState("");
@@ -124,12 +110,12 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
         const program = event.target.program.value;
         const rate = event.target.rate.value;
 
-        const industry = industryName;
+        const industry = event.target.industry.value;;
         const category = event.target.category.value;
 
-        const company = companyName;
+        const company = event.target.company.value;
         const brand = event.target.brand.value;
-        const variant = event.target.variant.value;
+        const variant = variantName;
 
         const country = event.target.country.value;
         const timesubmitted = event.target.timesubmitted.value;
@@ -248,7 +234,10 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                         </div> */}
                         <label className="input input-sm flex w-full items-center gap-2 bg-zinc-100 rounded-md shadow-sm">
                             <Text size={15} className="text-cyan-700" />
-                            <input name="title" type="text" className="grow font-semibold text-black" placeholder="Title" required />
+                            <input name="title" type="text" className="grow font-semibold text-black" placeholder="Title"
+                                // value={variantName}
+                                defaultValue={variantName}
+                                required />
                         </label>
                     </div>
                 </div>
@@ -309,38 +298,46 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                 </div>
 
                 <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
-                    {/* Industry */}
-                    <div className="">
+                    {/* Brand Variant Selection*/}
+                    <div>
                         <select
-                            name="industry"
-                            className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold max-w-xs"
+                            name="variant"
+                            className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold"
                             required
                             defaultValue=""
                             onChange={(e) => {
                                 const selectedID = e.target.value;
-                                setindustryID(selectedID);
-                                const selectedIndustry = Industries.find(item => item._id === selectedID);
-                                setIndustryName(selectedIndustry?.industry || '');
+                                setvariantID(selectedID)
+                                // setbrandgeneric("Pepsodent")
+                                // setcompany("Unilever")
+                                const selectedVariant = filteredVariants.find(item => item._id === selectedID);
+                                setvariantName(selectedVariant?.variant || '')
                             }}
                         >
-                            <option className="text-xs" value="" disabled>Select Industry</option>
-                            {Industries.map((item) => (
-                                <option key={item._id} className="text-sm" value={item._id}>{item.industry}</option>
+                            <option className="text-xs" value="" disabled>Select Brand Variant </option>
+                            {filteredVariants.map((item) => (
+                                <option key={item._id} className="text-sm" value={item._id}>
+                                    {item.variant}
+                                </option>
                             ))}
                         </select>
                     </div>
 
-                    {/* Category */}
+                    {/* Brand Generic Selection*/}
                     <div>
-                        <select name="category" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                            <option className="text-xs text-black" value="" disabled>
-                                {!industryID ? "Select Industry first" : "Select Category"}
-                            </option>
-                            {industryCategories.map((cat, idx) => (
-                                <option key={idx} value={cat}>
-                                    {cat}
+                        <select name="brand" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                            {!variantID && (
+                                <option className="text-xs" value="" disabled>
+                                    {!variantID ? "Select Variant first" : "Select Brand Generic"}
                                 </option>
-                            ))}
+                            )}
+                            {brandgeneric ? (
+                                <option value={brandgeneric}>
+                                    {brandgeneric}
+                                </option>
+                            ) : (<option className="text-xs" value="N/A">
+                                No Brands Available
+                            </option>)}
                         </select>
                     </div>
 
@@ -351,63 +348,68 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                             className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold"
                             required
                             defaultValue=""
-                            onChange={(e) => {
-                                const selectedID = e.target.value;
-                                setcompanyID(selectedID);
-                                const selectedCompany = filteredCompanies.find(item => item._id === selectedID);
-                                setCompanyName(selectedCompany?.company || '')
-                            }}
                         >
-                            <option className="text-xs" value="" disabled>Select Company </option>
-                            {filteredCompanies.map((item) => (
-                                <option key={item._id} className="text-sm" value={item._id}>
-                                    {item.company} | {item.country === "Ghana" && "GH" || item.country === "Nigeria" && "NG" || item.country === "Côte d'Ivoire" && "CI"}
+                            {!variantID && (
+                                <option className="text-xs" value="" disabled>
+                                    {!variantID ? "Select Variant first" : "Select Company"}
                                 </option>
-                            ))}
+                            )}
+                            {company ? (
+                                <option value={company}>
+                                    {company}
+                                </option>
+                            ) : (<option className="text-xs" value="N/A">
+                                No Company Available
+                            </option>)}
                         </select>
                     </div>
 
-                    {/* Brand Generic Selection*/}
-                    <div>
-                        <select name="brand" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                            <option className="text-xs" value="" disabled>
-                                {!companyID ? "Select Company first" : "Select Brand Generic"}
-                            </option>
-                            {brands.map((brand, idx) => (
-                                <option key={idx} value={brand}>
-                                    {brand}
-                                </option>
-                            ))}
-                            {brands.length === 0 && (
-                                <option className="text-xs" value="N/A">
-                                    No Brands Available
+                    {/* Industry */}
+                    <div className="">
+                        <select
+                            name="industry"
+                            className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold max-w-xs"
+                            required
+                            defaultValue=""
+                        >
+                            {!variantID && (
+                                <option className="text-xs" value="" disabled>
+                                    {!variantID ? "Select Variant first" : "Select Industry"}
                                 </option>
                             )}
+
+                            {industry ? (
+                                <option value={industry}>
+                                    {industry}
+                                </option>
+                            ) : (<option className="text-xs" value="N/A">
+                                No industry Available
+                            </option>)}
                         </select>
                     </div>
 
-                    {/* Brand Variant Selection*/}
+                    {/* Category */}
                     <div>
-                        <select name="variant" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
-                            <option className="text-xs" value="" disabled>
-                                {!companyID ? "Select Company first" : "Select Brand Variant"}
-                            </option>
-                            {variants.map((vari, idx) => (
-                                <option key={idx} value={vari}>
-                                    {vari}
-                                </option>
-                            ))}
-                            {variants.length === 0 && (
-                                <option className="text-xs" value="N/A">
-                                    No Variants Available
+                        <select name="category" className="select select-sm rounded-md shadow-sm bg-zinc-100 text-black font-semibold" required defaultValue="">
+                            {!variantID && (
+                                <option className="text-xs text-black" value="" disabled>
+                                    {!variantID ? "Select Variant first" : "Select Category"}
                                 </option>
                             )}
+                            {category ? (
+                                <option value={category}>
+                                    {category}
+                                </option>
+                            ) : (<option className="text-xs" value="N/A">
+                                No category Available
+                            </option>)}
                         </select>
                     </div>
+
                 </div>
 
                 <div className="flex flex-wrap justify-start items-center gap-5 mb-5">
-                    
+
                     {/* Country */}
                     <div className="flex justify-start items-center gap-2">
                         {session && (
@@ -448,7 +450,7 @@ export default function DataEntryForm({ UserID, User, Industries, Companies }) {
                         </select>
                     </div>
 
-                    {/* Time Submitted (Hidden) */} 
+                    {/* Time Submitted (Hidden) */}
                     <input
                         name="timesubmitted"
                         type="time"

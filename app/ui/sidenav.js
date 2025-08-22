@@ -269,7 +269,7 @@ export default function SideNavigation({ UserAccess }) {
 
             <button
                 onClick={() => signOut()}
-                className="hidden md:flex btn-ghost  justify-between items-center gap-2 bg-zinc-50 text-black/40 px-6 py-1 rounded-lg shadow-sm mb-1 hover:bg-red-100 transition-all mt-2">
+                className="hidden md:flex btn-ghost  justify-between items-center gap-2 bg-zinc-50 text-black/40 px-6 py-1 rounded-lg shadow-sm mb-1 hover:bg-red-100 transition-all mt-2 cursor-pointer">
                 <div className="flex items-center gap-2 text-black">
                     <Dot size={15} className="text-red-700" />
                     <span className={` font-semibold font-notosans text-sm`}>Signout</span>
